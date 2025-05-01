@@ -10,22 +10,6 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
-    services:
-      redis:
-        image: redis:alpine
-        ports:
-          - 6379:6379
-
-      solr:
-        image: solr
-        ports:
-          - 8983:8983
-        options: >-
-          --health-cmd="curl --fail http://localhost:8983/solr/admin/ping || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -35,21 +19,25 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install backend dependencies
         run: |
           cd backend
           npm install
 
-      - name: Run tests
+      - name: Run backend tests
         env:
           REDIS_URL: redis://localhost:6379
           SOLR_URL: http://localhost:8983/solr
         run: |
           cd backend
           npm test
-          
-      - name: Frotend tests
+
+      - name: Install frontend dependencies
         run: |
           cd frontend
           npm install
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
           npm test
