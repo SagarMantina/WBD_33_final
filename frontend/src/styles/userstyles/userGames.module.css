@@ -1,0 +1,145 @@
+/* .usergamesPage {
+    padding: 20px;
+    width: 70%;
+    position: relative;
+    left: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #1a1a1a;
+  }
+  
+  .usergamesheading {
+    font-size: 2.5rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .usergamesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .gameCard {
+    background: #1a1a1a;
+    border: 1px solid #2c2c2c;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .gameCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+  }
+  
+  .poster {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .gameDetails {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .gameName {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  .category,
+  .ratings,
+  .seller {
+    color: #cccccc;
+    font-size: 0.95rem;
+  }
+   */
+
+   .usergamesPage {
+    padding: 20px;
+    width: 70%;
+    position: relative;
+    left: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #1a1a1a;
+  }
+  
+  .usergames {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .usergamesheading {
+    font-size: 2.5rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .usergamesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .usergameCard {
+    background: #1a1a1a;
+    border: 1px solid #2c2c2c;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .usergameCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+  }
+  
+  .poster {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .gameDetails {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .gameName {
+    font-size: 1.4rem;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  .category,
+  .ratings,
+  .seller {
+    color: #cccccc;
+    font-size: 0.95rem;
+  }
+  

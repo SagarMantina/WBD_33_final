@@ -1,0 +1,116 @@
+/* CommunityManager.css */
+
+.community-manager {
+  width: 60%;
+  position: relative;
+  left: 25%;
+  font-family: "Black Ops One", system-ui;
+  }
+  
+  .community-manager-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .community-manager-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+  }
+  
+  .community-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .community-table th, .community-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .community-table th {
+    background-color: #f7fafc;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a5568;
+  }
+  
+  .community-table td {
+    font-size: 0.9rem;
+    color: #2d3748;
+  }
+  
+  .community-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .community-table tr:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+  
+  .action-button.view-chat {
+    background-color: #4299e1;
+    color: #ffffff;
+  }
+  
+  .action-button.view-chat:hover {
+    background-color: #2b6cb0;
+    transform: translateY(-2px);
+  }
+  
+  .action-button.delete-community {
+    background-color: #e53e3e;
+    color: #ffffff;
+  }
+  
+  .action-button.delete-community:hover {
+    background-color: #c53030;
+    transform: translateY(-2px);
+  }
+  
+  .action-button.delete-messages {
+    background-color: #16eca5;
+    color: #ffffff;
+  }
+  
+  .action-button.delete-messages:hover {
+    background-color: #0fbf84;
+    transform: translateY(-2px);
+  }
+  
+  .toast-container {
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .community-table th, .community-table td {
+      padding: 0.75rem;
+      font-size: 0.85rem;
+    }
+  
+    .action-button {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+  }
+  

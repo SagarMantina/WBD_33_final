@@ -1,0 +1,7 @@
+
+    === Redis Performance Report ===
+    Scenario: Without Redis
+    -----------------------------------
+    Avg Response Time: 30.14 ms
+    -----------------------------------
+    

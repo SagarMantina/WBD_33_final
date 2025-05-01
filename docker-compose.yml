@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - SOLR_URL=http://solr:8983/solr
+    depends_on:
+      - redis
+      - solr
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  solr:
+    image: solr
+    ports:
+      - "8983:8983"
+    command:
+      - solr-precreate
+      - mycore

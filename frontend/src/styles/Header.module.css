@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap');
+/* 
+.nav-bar {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: #1e3d6b;
+  font-family: "Doto", sans-serif;
+  font-weight: 500;
+ 
+}
+
+.nav-bar img {
+  width: 7%;
+  position: relative;
+  left: 15%;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  position: relative;
+  right: 3%;
+}
+
+nav li a {
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  color: yellow;
+  text-decoration: none;
+} */
+
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #1e3d6b;
+  font-family: "Doto", sans-serif;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  height: 80px;
+}
+
+.nav-bar img {
+  width: 7%;
+  position: relative;
+  left: 15%;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  position: relative;
+  right: 3%;
+}
+
+nav li a {
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  color: yellow;
+  text-decoration: none;
+}
