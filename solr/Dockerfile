@@ -1,8 +1,10 @@
 FROM solr:9.3.0
 
-COPY games_solr.json /games_solr.json
-COPY entrypoint.sh /entrypoint.sh
+USER root
+COPY games_solr.json /opt/solr/games_solr.json
+COPY entrypoint.sh /opt/solr/entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /opt/solr/entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+USER solr
+ENTRYPOINT ["/opt/solr/entrypoint.sh"]
