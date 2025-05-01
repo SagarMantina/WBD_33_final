@@ -1,8 +1,9 @@
 const user = require("../models/accountschema");
 const game_details= require("../models/gameschema");
 // const redis_client = require("../redis_client");
-const axios = require("axios");
-const SOLR_URL = "http://localhost:8983/solr/games_core/select";
+
+// const SOLR_URL = "http://localhost:8983/solr/games_core/select";
+// const SOLR_URL = "https://solr-ii1s.onrender.com/solr/#/games_core/select";
 
 // using redis
 // async function homeGames(req, res) {
@@ -158,23 +159,59 @@ async function getcategories(req,res)
 
 
 
-async function searchgames(req,res)
-{
-  try {
-    const searchTerm = req.query.term || "*"; // Default to all if no term is provided
+const axios = require('axios');
 
-    
+const SOLR_URL = "https://solr-ii1s.onrender.com/solr/games_core/select";
+
+// Helper to poll Solr until data is ready
+async function waitForSolrReady(maxAttempts = 10, intervalMs = 2000) {
+  const healthCheckUrl = `${SOLR_URL}?q=*:*&rows=1&wt=json`;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await axios.get(healthCheckUrl);
+      if (
+        response.data?.response?.docs &&
+        response.data.response.docs.length > 0
+      ) {
+        return true; // Solr is ready
+      }
+      console.log(`Waiting for Solr... Attempt ${attempt}/${maxAttempts}`);
+    } catch (error) {
+      console.log(`Solr check failed: ${error.message}`);
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervalMs)); // Wait before retrying
+  }
+
+  return false; // Timeout
+}
+
+async function searchgames(req, res) {
+  try {
+    const searchTerm = req.query.term || "*";
+
+    const isSolrReady = await waitForSolrReady();
+    if (!isSolrReady) {
+      return res.status(503).json({
+        error: "Solr is not ready. Please try again later.",
+      });
+    }
+
     const solrQuery = `${SOLR_URL}?q=game_name:${searchTerm}* OR category:${searchTerm}*&wt=json`;
 
     const response = await axios.get(solrQuery);
-    const games = response.data.response.docs; // Extract the game data
-     games.forEach((game) => {
-      console.log(game.game_name)});
+    const games = response.data.response.docs;
+
+    games.forEach((game) => {
+      console.log(game.game_name);
+    });
 
     res.json(games);
-} catch (error) {
+  } catch (error) {
     console.error("Solr Search Error:", error.message);
     res.status(500).json({ error: "Error fetching games from Solr." });
+  }
 }
-}
+
 module.exports  = { homeGames , getGame , getcategories , searchgames };
