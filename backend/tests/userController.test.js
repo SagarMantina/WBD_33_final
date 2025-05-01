@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { updateuserdetails, getuserTransactions, getuserMyGames, checkUser } = require("../controllers/usercontroller");
+const { updateuserdetails, getuserTransactions, getuserMyGames, checkUser } = require("../controllers/userController");
 
 jest.mock("../models/accountschema", () => ({
   findOne: jest.fn(),
