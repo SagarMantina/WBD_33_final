@@ -2,7 +2,7 @@ const user = require("../models/accountschema");
 const game_details= require("../models/gameschema");
 // const redis_client = require("../redis_client");
 const axios = require("axios");
-const SOLR_URL = "http://localhost:8983/solr/mongodb_core/select";
+const SOLR_URL = "http://localhost:8983/solr/games_core/select";
 
 // using redis
 // async function homeGames(req, res) {
@@ -168,7 +168,8 @@ async function searchgames(req,res)
 
     const response = await axios.get(solrQuery);
     const games = response.data.response.docs; // Extract the game data
-    console.log(games);
+     games.forEach((game) => {
+      console.log(game.game_name)});
 
     res.json(games);
 } catch (error) {

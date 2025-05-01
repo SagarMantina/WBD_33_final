@@ -110,7 +110,7 @@ const GameCard = ({ game_details}) => {
         </span>
         <p>
           <span style={{ color: 'greenyellow' }}>Very Positive</span> |{' '}
-          {game_details.reviews.length} User Reviews
+          {/* {game_details.reviews.length} User Reviews */}
         </p>
       </div>
 

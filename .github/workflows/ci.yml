@@ -47,3 +47,9 @@ jobs:
         run: |
           cd backend
           npm test
+          
+      - name: Frotend tests
+        run: |
+          cd frontend
+          npm install
+          npm test
