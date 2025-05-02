@@ -2,100 +2,105 @@ const user = require("../models/accountschema");
 const game_details= require("../models/gameschema");
 // const redis_client = require("../redis_client");
 
+const redis = require('../config/redis_client');
+
+
 // const SOLR_URL = "http://localhost:8983/solr/games_core/select";
-// const SOLR_URL = "https://solr-ii1s.onrender.com/solr/#/games_core/select";
 
 // using redis
-// async function homeGames(req, res) {
-//   try { 
-//       console.log("Using Redis....");
+async function homeGames(req, res) {
+  try { 
+      console.log("Using Redis....");
       
-//       var highlight_games = [];
-//       var featured_games = [];
-//       var discounts_games = [];
-//       var popular_games = [];
-//       var new_games = [];
+      var highlight_games = [];
+      var featured_games = [];
+      var discounts_games = [];
+      var popular_games = [];
+      var new_games = [];
 
    
-//       const cachedNewGames = await redis_client.get("new_games");
-//       const cachedHighlightGames = await redis_client.get("highlight_games");
-//       const cachedFeaturedGames = await redis_client.get("featured_games");
-//       const cachedDiscountsGames = await redis_client.get("discounts_games");
-//       const cachedPopularGames = await redis_client.get("popular_games");
+      const cachedNewGames = await redis.get("new_games");
+      const cachedHighlightGames = await redis.get("highlight_games");
+      const cachedFeaturedGames = await redis.get("featured_games");
+      const cachedDiscountsGames = await redis.get("discounts_games");
+      const cachedPopularGames = await redis.get("popular_games");
 
-//       if (cachedNewGames && cachedHighlightGames && cachedFeaturedGames && cachedDiscountsGames && cachedPopularGames) {
+      if (cachedNewGames && cachedHighlightGames && cachedFeaturedGames && cachedDiscountsGames && cachedPopularGames) {
          
-//           new_games = JSON.parse(cachedNewGames);
-//           highlight_games = JSON.parse(cachedHighlightGames);
-//           featured_games = JSON.parse(cachedFeaturedGames);
-//           discounts_games = JSON.parse(cachedDiscountsGames);
-//           popular_games = JSON.parse(cachedPopularGames);
+          new_games = JSON.parse(cachedNewGames);
+          highlight_games = JSON.parse(cachedHighlightGames);
+          featured_games = JSON.parse(cachedFeaturedGames);
+          discounts_games = JSON.parse(cachedDiscountsGames);
+          popular_games = JSON.parse(cachedPopularGames);
           
-//           console.log("Retrieved home games data from cache");
-//       } else {
-//           console.log("Cache miss for home games data, fetching from database");
+          console.log("Cache Hit, Retrieved home games data from Redis Cache");
+      } else {
+          console.log("Cache miss for home games data, fetching from database");
 
-//           new_games = await game_details.find().sort({ createdAt: -1 }).limit(8);
-//           highlight_games = await game_details.find({ highlight: true });
-//           featured_games = await game_details.find({ featured: true }).limit(8);
-//           discounts_games = await game_details.find({ discounts: true }).limit(8);
-//           popular_games = await game_details.find({ popular: true }).limit(8);
+          new_games = await game_details.find().sort({ createdAt: -1 }).limit(8);
+          highlight_games = await game_details.find({ highlight: true });
+          featured_games = await game_details.find({ featured: true }).limit(8);
+          discounts_games = await game_details.find({ discounts: true }).limit(8);
+          popular_games = await game_details.find({ popular: true }).limit(8);
 
       
-//           await redis_client.setex("new_games", 3600, JSON.stringify(new_games));
-//           await redis_client.setex("highlight_games", 3600, JSON.stringify(highlight_games));
-//           await redis_client.setex("featured_games", 3600, JSON.stringify(featured_games));
-//           await redis_client.setex("discounts_games", 3600, JSON.stringify(discounts_games));
-//           await redis_client.setex("popular_games", 3600, JSON.stringify(popular_games));
+          // Store the fetched data in Redis cache with an expiration time of 1 hour (3600 seconds)
+          await redis.set("new_games", JSON.stringify(new_games), { EX: 3600 });
+          await redis.set("discounts_games", JSON.stringify(discounts_games), { EX: 3600 });
+          await redis.set("highlight_games", JSON.stringify(highlight_games), { EX: 3600 });
+          await redis.set("featured_games", JSON.stringify(featured_games), { EX: 3600 });
+          await redis.set("popular_games", JSON.stringify(popular_games), { EX: 3600 });
+
+       
           
-//           console.log("Stored home games data in cache");
-//       }
+          console.log("Stored home games data in cache");
+      }
 
-//       res.status(200).json({ 
-//           "new_games": new_games, 
-//           "highlight_games": highlight_games, 
-//           "featured_games": featured_games, 
-//           "discounts_games": discounts_games, 
-//           "popular_games": popular_games
-//       });
+      res.status(200).json({ 
+          "new_games": new_games, 
+          "highlight_games": highlight_games, 
+          "featured_games": featured_games, 
+          "discounts_games": discounts_games, 
+          "popular_games": popular_games
+      });
 
-//   } catch (error) {
-//       console.error("Error fetching home games:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//   }
-// }
+  } catch (error) {
+      console.error("Error fetching home games:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 
 // without redis
-async function  homeGames (req, res)  {
-  try {   
-    console.log("Using MongoDB....")
-     var highlight_games = [];
-     var featured_games = [];
-     var discounts_games = [];
-     var popular_games = [];
-     var new_games = [];
+// async function  homeGames (req, res)  {
+//   try {   
+//     console.log("Using MongoDB....")
+//      var highlight_games = [];
+//      var featured_games = [];
+//      var discounts_games = [];
+//      var popular_games = [];
+//      var new_games = [];
 
  
-     new_games = await game_details.find().sort({ createdAt: -1 }).limit(8);
-     highlight_games = await game_details.find({ highlight: true });
-     featured_games = await game_details.find({ featured: true }).limit(8);
-     discounts_games = await game_details.find({ discounts: true }).limit(8);
-     popular_games = await game_details.find({ popular: true }).limit(8);
+//      new_games = await game_details.find().sort({ createdAt: -1 }).limit(8);
+//      highlight_games = await game_details.find({ highlight: true });
+//      featured_games = await game_details.find({ featured: true }).limit(8);
+//      discounts_games = await game_details.find({ discounts: true }).limit(8);
+//      popular_games = await game_details.find({ popular: true }).limit(8);
 
     
 
       
 
-     res.status(200).json({ "new_games" : new_games, "highlight_games" : highlight_games, "featured_games" : featured_games, "discounts_games" : discounts_games, "popular_games" : popular_games});
+//      res.status(200).json({ "new_games" : new_games, "highlight_games" : highlight_games, "featured_games" : featured_games, "discounts_games" : discounts_games, "popular_games" : popular_games});
 
-  }
+//   }
 
-  catch (error) {
-    console.error("Error fetching home games:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}
+//   catch (error) {
+//     console.error("Error fetching home games:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// }
 
 
 

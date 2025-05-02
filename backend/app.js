@@ -16,7 +16,7 @@ const router = require("./routes/router");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const rfs = require("rotating-file-stream");
-
+require('dotenv').config();
 const csurf = require("csurf");
 
 // app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
