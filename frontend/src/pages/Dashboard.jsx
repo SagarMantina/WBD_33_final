@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SellerPage from "./SellerPage";
 import ProfilePage from "./ProfilePage";
 import AdminPage from "./AdminPage";
-import Unauthorized from "./Unauthorized";
+import Unauthorized from "./ErrorPage";
 
 const Dashboard = () => {
   const [role, setRole] = useState(null);

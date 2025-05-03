@@ -1,0 +1,286 @@
+/* ErrorPage.css */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Press+Start+2P&display=swap');
+
+:root {
+  --primary-color: #6c5ce7;
+  --secondary-color: #00cec9;
+  --accent-color: #fd79a8;
+  --dark-color: #2d3436;
+  --light-color: #dfe6e9;
+  --error-color: #ff4757;
+  --success-color: #2ed573;
+  --warning-color: #ffa502;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: #070b17;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Glitch aesthetic elements */
+.glitch-element {
+  position: absolute;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  opacity: 0.6;
+  animation: glitch-animation 4s infinite;
+}
+
+@keyframes glitch-animation {
+  0% { width: 0; opacity: 0; }
+  5% { width: 0; opacity: 0.8; }
+  10% { width: 100%; opacity: 0; }
+  100% { width: 0; opacity: 0; }
+}
+
+.pixel-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.error-card {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  background: rgba(20, 25, 45, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(108, 92, 231, 0.25) inset;
+  overflow: hidden;
+  z-index: 10;
+  border: 1px solid rgba(108, 92, 231, 0.3);
+  animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 30px rgba(108, 92, 231, 0.25) inset; }
+  50% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 50px rgba(108, 92, 231, 0.5) inset; }
+  100% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 30px rgba(108, 92, 231, 0.25) inset; }
+}
+
+.error-card::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: -1;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color), var(--primary-color));
+  background-size: 400%;
+  border-radius: 25px;
+  opacity: 0.7;
+  animation: glowing 20s linear infinite;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+.error-content {
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.error-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+}
+
+.error-svg {
+  stroke: var(--error-color);
+  stroke-width: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.error-status {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 4rem;
+  margin: 0;
+  background: linear-gradient(to right, var(--error-color), var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+  position: relative;
+}
+
+.error-status::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-color), var(--error-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+.error-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 20px 0;
+  color: var(--light-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.error-message {
+  font-size: 1.2rem;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+.error-countdown {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1rem;
+  margin: 25px 0;
+  color: var(--secondary-color);
+  font-weight: 600;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.action-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 600;
+  color: white;
+  background-color: transparent;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.action-button:hover::before {
+  transform: translateX(0);
+}
+
+.button-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+.store-button {
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.store-button:hover {
+  background-color: rgba(46, 213, 115, 0.2);
+  box-shadow: 0 0 15px rgba(46, 213, 115, 0.5);
+}
+
+.home-button {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.home-button:hover {
+  background-color: rgba(0, 206, 201, 0.2);
+  box-shadow: 0 0 15px rgba(0, 206, 201, 0.5);
+}
+
+.login-button {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.login-button:hover {
+  background-color: rgba(108, 92, 231, 0.2);
+  box-shadow: 0 0 15px rgba(108, 92, 231, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .error-status {
+    font-size: 3rem;
+  }
+  
+  .error-title {
+    font-size: 1.5rem;
+  }
+  
+  .error-content {
+    padding: 30px 20px;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+}
+
+/* Animation for errors */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-container.shake .error-card {
+  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}

@@ -141,26 +141,26 @@ async function getcategories(req,res)
 }
 
 
-// async function searchgames(req,res)
-// {
-//     try {
-//         var search_term = req.query.term.toUpperCase();
-//         // console.log(search_term);
+async function searchgames(req,res)
+{
+    try {
+        var search_term = req.query.term.toUpperCase();
+        // console.log(search_term);
        
 
-//          const searchTermRegex = new RegExp('^' + search_term, "i"); 
-//          const games_filtered = await game_details
-//       .find({
-//         $or: [{ game_name: searchTermRegex }, { category: searchTermRegex }],
-//       })
-//       .limit(5);
-//         //  console.log(games_filtered);
-//         res.json(games_filtered);
-//       } catch (error) {
-//         console.error("Error searching for games:", error);
-//         res.status(500).json({ error: "Internal Server Error" });
-//       }
-// }
+         const searchTermRegex = new RegExp('^' + search_term, "i"); 
+         const games_filtered = await game_details
+      .find({
+        $or: [{ game_name: searchTermRegex }, { category: searchTermRegex }],
+      })
+      .limit(5);
+        //  console.log(games_filtered);
+        res.json(games_filtered);
+      } catch (error) {
+        console.error("Error searching for games:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+}
 
 
 
@@ -194,28 +194,39 @@ async function waitForSolrReady(maxAttempts = 10, intervalMs = 2000) {
 
 async function searchgames(req, res) {
   try {
-    const searchTerm = req.query.term || "*";
-
-    const isSolrReady = await waitForSolrReady();
-    if (!isSolrReady) {
-      return res.status(503).json({
-        error: "Solr is not ready. Please try again later.",
-      });
-    }
-
+    const searchTerm = (req.query.term || "").trim();
     const solrQuery = `${SOLR_URL}?q=game_name:${searchTerm}* OR category:${searchTerm}*&wt=json`;
 
-    const response = await axios.get(solrQuery);
-    const games = response.data.response.docs;
+    const isSolrReady = await waitForSolrReady();
 
-    games.forEach((game) => {
-      console.log(game.game_name);
-    });
+    let games = [];
+
+    if (isSolrReady) {
+      try {
+        const response = await axios.get(solrQuery);
+        games = response.data.response.docs;
+      } catch (solrError) {
+        console.log("Solr query failed, falling back to MongoDB:", solrError.message);
+      }
+    }
+
+    // Fallback to MongoDB if Solr fails or returns nothing
+    if (!isSolrReady || games.length === 0) {
+      console.log("Using MongoDB fallback for search");
+      const searchRegex = new RegExp("^" + searchTerm, "i");
+
+      games = await game_details.find({
+        $or: [
+          { game_name: searchRegex },
+          { category: searchRegex }
+        ]
+      }).limit(5);
+    }
 
     res.json(games);
   } catch (error) {
-    console.error("Solr Search Error:", error.message);
-    res.status(500).json({ error: "Error fetching games from Solr." });
+    console.error("Search Error:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 

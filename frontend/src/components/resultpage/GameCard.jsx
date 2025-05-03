@@ -26,7 +26,7 @@ const GameCard = ({ game_details}) => {
     
       const getUserData = async () => {
         try {
-          const response = await fetch("http://localhost:3000/userdata",
+          const response = await fetch("http://localhost:3000/user/role",
             {
               method: "GET",
               headers: {
@@ -35,9 +35,15 @@ const GameCard = ({ game_details}) => {
               credentials: "include", // Include credentials for sending cookies
             }
           ); // Replace with your API endpoint
-          const data = await response.json();
-          console.log("User data:", data.role);
-          setRole(data.role); // Assume the API returns the role
+          
+          if (response.ok) {
+            const data = await response.json();
+            const { role } = data;
+            console.log("User data:", role);
+            setRole(role);
+        } else {
+            console.error('Failed to fetch role');
+        }
         } catch (error) {
           console.error("Failed to fetch user role:", error);
           setRole("unauthorized");

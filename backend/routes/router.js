@@ -56,6 +56,7 @@ const {  getaTransactions} = require("../controllers/dashboardController");
 const {deletegame} = require("../controllers/dashboardController"); 
 const {authRoute} = require("../middleware/authRoute");
 const {admin_update_user, admin_create_user, admin_delete_user,admin_delete_community_message,admin_delete_community} = require("../controllers/adminController");
+const  {getRole} = require("../controllers/userController");
 
 
 router.delete("/admin/delete_user", adminRoute, admin_delete_user);
@@ -66,9 +67,172 @@ router.delete("/admin/delete_community_message", adminRoute, admin_delete_commun
 router.get("/admin/all_users", adminRoute, geteveryUser);
 
 //to use to update the details
-router.post("/updateuser", updateuserdetails);
-router.post("/deletegame", deletegame);
 
+
+/**
+ * @swagger
+ * /updateuser:
+ *   post:
+ *     summary: Update user details
+ *     description: Update user details in the database. Allows updating the username, email, or password.
+ *     tags: 
+ *       - User
+ *       - Seller
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: New username (optional).
+ *               email:
+ *                 type: string
+ *                 description: New email address (optional).
+ *               password:
+ *                 type: string
+ *                 description: New password (optional).
+ *     responses:
+ *       200:
+ *         description: User details updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User details updated successfully.
+ *       400:
+ *         description: No valid fields provided to update.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: No valid fields provided to update.
+ *       401:
+ *         description: Unauthorized or user not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: User not found.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: Internal server issues.
+ */
+
+router.post("/updateuser", updateuserdetails);
+
+
+
+
+// router.post("/deletegame", deletegame);
+
+
+/**
+ * @swagger
+ * /sell/games:
+ *   post:
+ *     summary: Create a new game
+ *     description: Allows a seller to create a new game and save it to the database.
+ *     tags: 
+ *       - Seller
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gameName:
+ *                 type: string
+ *                 description: Name of the game.
+ *                 example: "Adventure Quest"
+ *               description:
+ *                 type: string
+ *                 description: Description of the game.
+ *                 example: "An exciting adventure game."
+ *               poster:
+ *                 type: string
+ *                 description: URL of the game's poster image.
+ *                 example: "https://example.com/poster.jpg"
+ *               mainImage:
+ *                 type: string
+ *                 description: URL of the game's main image.
+ *                 example: "https://example.com/main.jpg"
+ *               subImages:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of URLs for additional images.
+ *                 example: ["https://example.com/sub1.jpg", "https://example.com/sub2.jpg"]
+ *               gifs:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of URLs for GIFs related to the game.
+ *                 example: ["https://example.com/gif1.gif", "https://example.com/gif2.gif"]
+ *               category:
+ *                 type: string
+ *                 description: Category of the game.
+ *                 example: "Action"
+ *               releaseDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Release date of the game.
+ *                 example: "2025-05-01"
+ *               gamePrice:
+ *                 type: number
+ *                 description: Price of the game.
+ *                 example: 19.99
+ *               about:
+ *                 type: string
+ *                 description: Additional information about the game.
+ *                 example: "This game offers an immersive experience."
+ *     responses:
+ *       201:
+ *         description: Game created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Game created successfully!
+ *                 game:
+ *                   type: object
+ *                   description: Details of the created game.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error creating game.
+ *                 error:
+ *                   type: string
+ *                   example: Detailed error message.
+ */
 router.post("/sell/games", async (req, res) => {
   try {
     const {
@@ -162,10 +326,160 @@ router.post("/sell/games", async (req, res) => {
 // });
 
 
+/**
+ * @swagger
+ * /admin/update_user:
+ *   put:
+ *     summary: Update a user's password
+ *     description: Allows an admin to update the password of an existing user.
+ *     tags: 
+ *       - Admin
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: Username of the user whose password needs to be updated.
+ *                 example: "john_doe"
+ *               newPassword:
+ *                 type: string
+ *                 description: The new password for the user.
+ *                 example: "new_secure_password123"
+ *     responses:
+ *       200:
+ *         description: Password updated successfully.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Password updated successfully
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: User not found
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Error updating password
+ */
 router.put("/admin/update_user", adminRoute, admin_update_user);
+
+
+/**
+ * @swagger
+ * /admin/create_user:
+ *   post:
+ *     summary: Create a new user
+ *     description: Allows an admin to create a new user with a username, email, and password.
+ *     tags: 
+ *       - Admin
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The username for the new user.
+ *                 example: "john_doe"
+ *               email:
+ *                 type: string
+ *                 description: The email address for the new user.
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 description: The password for the new user.
+ *                 example: "secure_password123"
+ *     responses:
+ *       201:
+ *         description: User created successfully.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: User created successfully
+ *       400:
+ *         description: User or email already exists.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: User already exists
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Error creating user
+ */
 router.post("/admin/create_user", adminRoute, admin_create_user);
 
 
+/**
+ * @swagger
+ * /user/role:
+ *   get:
+ *     summary: Get the role of the logged-in user
+ *     description: Fetches the role of the user based on the username stored in cookies. The role is cached in Redis for faster subsequent requests.
+ *     tags: 
+ *       - User
+ *     responses:
+ *       200:
+ *         description: Role fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 role:
+ *                   type: string
+ *                   description: The role of the user.
+ *                   example: "admin"
+ *       400:
+ *         description: Username cookie is missing.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: Username cookie is missing
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errorMessage:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/user/role" , authRoute, getRole);
 
 //handle the default route for all
 // router.get("/", getdashboard);
@@ -175,6 +489,54 @@ router.post("/admin/create_user", adminRoute, admin_create_user);
 
 //admin routes
 //this route for getting admin all the game count, user count smth like that
+
+/**
+ * @swagger
+ * /admin_data:
+ *   get:
+ *     summary: Get admin dashboard data
+ *     description: Fetches data for the admin dashboard, including total games, total users, total purchases, today's sales, and sales increase compared to yesterday.
+ *     tags: 
+ *       - Admin
+ *     responses:
+ *       200:
+ *         description: Admin data fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total_games:
+ *                   type: integer
+ *                   description: Total number of games.
+ *                   example: 150
+ *                 total_users:
+ *                   type: integer
+ *                   description: Total number of users.
+ *                   example: 500
+ *                 total_purchases:
+ *                   type: integer
+ *                   description: Total number of purchases.
+ *                   example: 1200
+ *                 today_sales:
+ *                   type: integer
+ *                   description: Number of sales made today.
+ *                   example: 50
+ *                 sales_increase:
+ *                   type: integer
+ *                   description: Increase in sales compared to yesterday.
+ *                   example: 10
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Internal Server Error
+ */
 router.get("/admin_data",  getadmindata);
 
 

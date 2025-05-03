@@ -76,7 +76,7 @@ async function deletegame(req, res) {
     if (!deletedGame) {
       return res.status(404).json({ error: "Game not found" });
     }
-    res.json({ message: "Game deleted successfully" });
+    res.status(200).json({ message: "Game deleted successfully" });
   } catch (error) {
     console.error("Error deleting game:", error);
     res.status(500).json({ error: "Internal Server Error" });

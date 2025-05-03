@@ -10,6 +10,9 @@ const app = express();
 const transaction = require("../models/transactionSchema");
 
 async function getadmindata(req, res) {
+
+
+  try {
   let total_games = await game_details.countDocuments();
   let total_users = await user.countDocuments();
 
@@ -42,8 +45,6 @@ async function getadmindata(req, res) {
   // Calculate sales increase
   const sales_increase = today_sales - yesterday_sales;
 
- 
-
   let data = {
     total_games: total_games,
     total_users: total_users,
@@ -53,6 +54,11 @@ async function getadmindata(req, res) {
   };
   // console.log(data);
   res.status(200).json(data);
+}
+  catch (error) {
+    console.error("Error fetching admin data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 }
 
 //To Update Username
@@ -82,7 +88,7 @@ async function getallUsers(req, res) {
     // Get total users
     const total_users = await user.countDocuments();
 
-    // Total visits 
+    // Total visits
     const total_visits = total_users; // Assuming all users are visits
 
     // Get the count of users created in the last 7 days
@@ -118,27 +124,36 @@ async function getallUsers(req, res) {
   }
 }
 
-
 async function admin_update_user(req, res) {
   try {
-      // console.log("update user");
-      const { username, newPassword } = req.body;
-      const existing_user = await user.findOne({ username });
-      if (!existing_user) {
-        return res.status(404).send("User not found");
-      }
-      existing_user.password = newPassword;
-      await existing_user.save();
-      res.send("Password updated successfully");
-    } catch (error) {
-      console.error("Error updating password:", error);
-      res.status(500).send("Error updating password");
+    // console.log("update user");
+    const { username, newPassword } = req.body;
+    const existing_user = await user.findOne({ username });
+    if (!existing_user) {
+      return res.status(404).send("User not found");
     }
+    existing_user.password = newPassword;
+    await existing_user.save();
+    res.send("Password updated successfully");
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).send("Error updating password");
+  }
 }
 
 async function admin_create_user(req, res) {
   try {
     const { username, email, password } = req.body;
+    password = await bcrypt.hash(password, 10);
+    const existing_user = await user.find({ username });
+    if (existing_user.length) {
+      return res.status(400).send("User already exists");
+    }
+    // Check if the email already exists
+    const existingEmail = await user.find({ email });
+    if (existingEmail.length) {
+      return res.status(400).send("Email already exists");
+    }
     const newUser = new user({ username, email, password, role: "user" });
     await newUser.save();
     res.status(201).send("User created successfully");
@@ -148,36 +163,32 @@ async function admin_create_user(req, res) {
   }
 }
 
-
-
 // new chages
 
-async function admin_delete_user(req,res) {
-
-  try{
-    const {username }=  req.body;
-
+async function admin_delete_user(req, res) {
+  try {
+    const { username } = req.body;
 
     const existing_user = await user.findOne({ username });
     if (!existing_user) {
       return res.status(404).json({ message: "User not found" });
     }
     await user.deleteOne({ username });
-     console.log("User deleted successfully");
-     res.status(200).json({ message: "User deleted successfully" });
+    console.log("User deleted successfully");
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).send("Error deleting user");
   }
 }
 
+async function admin_delete_community(req, res) {
+  try {
+    const { community_name } = req.body;
 
-async function admin_delete_community(req,res) {
-  
-  try{
-    const {community_name }=  req.body;
-
-    const existing_community = await community.findOne({ name: community_name });
+    const existing_community = await community.findOne({
+      name: community_name,
+    });
 
     console.log(existing_community);
     if (!existing_community) {
@@ -186,21 +197,20 @@ async function admin_delete_community(req,res) {
     await community.deleteOne({ name: community_name });
 
     console.log("Community deleted successfully");
-      res.status(200).json({ message: "Community deleted successfully" });
+    res.status(200).json({ message: "Community deleted successfully" });
   } catch (error) {
     console.error("Error deleting community:", error);
     res.status(500).send("Error deleting community");
   }
 }
 
-async function admin_delete_community_message(req,res) {
-  
-  try{
-
-
-    const {community_name }=  req.body;
+async function admin_delete_community_message(req, res) {
+  try {
+    const { community_name } = req.body;
     console.log(community_name);
-    const existing_community = await community.findOne({ name: community_name });
+    const existing_community = await community.findOne({
+      name: community_name,
+    });
     if (!existing_community) {
       return res.status(404).json({ message: "Community not found" });
     }
@@ -208,9 +218,9 @@ async function admin_delete_community_message(req,res) {
       { name: community_name },
       { $set: { messages: [] } }
     );
-    
+
     console.log("Message deleted successfully");
-      res.status(200).json({ message: "Message deleted successfully" });
+    res.status(200).json({ message: "Message deleted successfully" });
   } catch (error) {
     console.error("Error deleting message:", error);
     res.status(500).send("Error deleting message");

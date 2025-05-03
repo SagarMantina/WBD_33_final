@@ -20,7 +20,7 @@ import Communities from './pages/Communities';
 
 import CommunityChat from './pages/CommunityChat';
 import About from './pages/About';
-import Unauthorized from './pages/Unauthorized';
+import Unauthorized from './pages/ErrorPage';
 
 import { useCartStore } from './store/cartStore';
 import { useEffect } from 'react';
@@ -85,7 +85,8 @@ function App() {
 
         <Route path="/communities" element={<Communities />} />
         <Route path="/communities/:communityname" element={<CommunityChat />} />
-     
+        {/* Catch-all route for undefined paths */}
+        <Route path="*" element={<Unauthorized />} />
       </Routes>
     </Router>
   );

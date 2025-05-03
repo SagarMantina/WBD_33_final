@@ -58,7 +58,7 @@ const GamePage = () => {
   useEffect(() => {
       const fetchRole = async () => {
           try {
-              const response = await fetch(`http://localhost:3000/userdata`, {
+              const response = await fetch(`http://localhost:3000/user/role`, {
                   method: 'GET',
                   credentials: 'include',
                   headers: {
@@ -68,8 +68,9 @@ const GamePage = () => {
 
               if (response.ok) {
                   const data = await response.json();
-                  console.log(data.role);
-                  setRole(data.role); 
+                  const { role } = data;
+                  console.log("User data:", role);
+                  setRole(role);
               } else {
                   console.error('Failed to fetch role');
               }

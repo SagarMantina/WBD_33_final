@@ -206,7 +206,10 @@ io.on("connection", (socket) => {
 });
 
 
+const swaggerUI = require('swagger-ui-express');
+const swaggerSpec = require('./swagger/swaggerOptions');
 
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
 app.use(errorHandler);
 app.use(notFoundHandler);
