@@ -41,3 +41,27 @@ jobs:
         run: |
           cd frontend
           npm test
+
+      - name: Build Docker images
+        run: docker-compose -f docker-compose.yml build
+
+      - name: Start containers
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Wait for services to initialize
+        run: sleep 10
+
+      - name: Check container status
+        run: docker-compose ps
+
+      - name: Test backend health (optional)
+        run: |
+          curl -f http://localhost:5000 || (echo "Backend not responding" && exit 1)
+
+      - name: Test frontend health (optional)
+        run: |
+          curl -f http://localhost:3000 || (echo "Frontend not responding" && exit 1)
+
+      - name: Shut down containers
+        if: always()
+        run: docker-compose down
