@@ -130,7 +130,7 @@ describe('GamePage Component', () => {
           ok: true,
           json: () => Promise.resolve(mockCompareGames)
         });
-      } else if (url.includes('/userdata')) {
+      } else if (url.includes('/user/role')) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({ role: 'User' })
@@ -183,7 +183,7 @@ describe('GamePage Component', () => {
   test('does not show CartPurchase component for non-User role', async () => {
     // Mock userdata fetch to return non-User role
     global.fetch.mockImplementation((url) => {
-      if (url.includes('/userdata')) {
+      if (url.includes('/user/role')) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({ role: 'Seller' })
