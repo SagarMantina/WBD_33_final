@@ -104,6 +104,13 @@ describe('Admin Controller Unit Tests', () => {
 
   test('admin_create_user should create a user', async () => {
     const req = { body: { username: 'newuser', email: 'e', password: 'p' } };
+
+   
+    user.find
+      .mockImplementationOnce(() => Promise.resolve([])) // for username check
+      .mockImplementationOnce(() => Promise.resolve([])); // for email check
+
+    
     const mockSave = jest.fn().mockResolvedValue(true);
     user.mockImplementation(() => ({ save: mockSave }));
 

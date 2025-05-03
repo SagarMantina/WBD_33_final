@@ -143,7 +143,7 @@ async function admin_update_user(req, res) {
 
 async function admin_create_user(req, res) {
   try {
-    const { username, email, password } = req.body;
+    let { username, email, password } = req.body;
     password = await bcrypt.hash(password, 10);
     const existing_user = await user.find({ username });
     if (existing_user.length) {
