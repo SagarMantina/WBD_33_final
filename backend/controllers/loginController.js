@@ -21,11 +21,13 @@ async function postlogin(req, res) {
     const isPass = await bcrypt.compare(password, exists.password);
 
     if (isPass) {
-      res.cookie("username", username, {
-        httpOnly: false,    // Allow access from the frontend
-        secure: false,      // Set true in production when using HTTPS
-        sameSite: "none",    // Or "strict" based on your use case
-      });
+     res.cookie("username", username, {
+  httpOnly: true,    // Make it inaccessible to JavaScript on the client side (more secure)
+  secure: process.env.NODE_ENV === "production",  // Set to true when using HTTPS in production
+  sameSite: "None",  // Allows cookies to be sent cross-origin (important for login)
+  domain: ".render.com", // Set the domain to allow cross-subdomain cookies (optional, depending on your setup)
+});
+
   
      
       return res.json({ userrole: exists.role });
