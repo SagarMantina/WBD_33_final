@@ -19,6 +19,8 @@ const rfs = require("rotating-file-stream");
 require('dotenv').config();
 const csurf = require("csurf");
 
+app.set('trust proxy', true)
+
 // app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 const { errorHandler, notFoundHandler } = require("./middleware/errorhandlingRoute");
 const port = process.env.PORT || 3000;
