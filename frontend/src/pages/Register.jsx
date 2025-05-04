@@ -6,9 +6,11 @@ import { FaEnvelope, FaUser, FaKey } from 'react-icons/fa';
 import styles from "../styles/Register.module.css";
 import Header from './Header';
 import Footer from './Footer';
+import { useNavigate } from 'react-router-dom';
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const backendUrl = 'https://p2p-final-backend.onrender.com';
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     username: '',
@@ -67,7 +69,8 @@ const Register = () => {
       const errorData = await response.json(); 
       setErrorMessage(errorData.errorMessage || "An error occurred."); 
     } else {
-      window.location.href = "http://localhost:5000/register2"; 
+      navigate("/register2");
+      // window.location.href = "http://localhost:5000/register2"; 
     }
   };
 
