@@ -34,7 +34,8 @@ function SalesInfo() {
     const fetchData = async () => {
       try {
         // Fetch dashboard metrics
-        const metricsResponse = await fetch('http://localhost:3000/admin_data');
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const metricsResponse = await fetch(`${backendUrl}/admin_data`);
         const metricsJson = await metricsResponse.json();
         setTotalGames(metricsJson.total_games);
         setTotalPurchases(metricsJson.total_purchases);
@@ -42,7 +43,7 @@ function SalesInfo() {
         setSalesIncrease(metricsJson.sales_increase);
         
         // Fetch top-selling games data
-        const sellingResponse = await fetch('http://localhost:3000/api/top-selling');
+        const sellingResponse = await fetch(`${backendUrl}/api/top-selling`);
         
         const sellingJson = await sellingResponse.json();
         const sellingGames = sellingJson.data.map(game => game.game_name);
@@ -53,7 +54,7 @@ function SalesInfo() {
         });
 
         // Fetch top-revenue games data
-        const profitedResponse = await fetch('http://localhost:3000/api/top-revenue');
+        const profitedResponse = await fetch(`${backendUrl}/api/top-revenue`);
     
         const profitedJson = await profitedResponse.json();
         const profitedGames = profitedJson.data.map(game => game.game_name);

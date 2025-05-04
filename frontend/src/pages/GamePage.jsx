@@ -3,6 +3,7 @@ import ImageContainer from '../components/gamepage/ImageContainer';
 import InfoContainer from '../components/gamepage/InfoContainer';
 import About from '../components/gamepage/About';
 import CartPurchase from '../components/gamepage/CartPurchase';
+import AdminDelete from '../components/gamepage/AdminDelete';
 import Reviews from '../components/gamepage/Reviews';
 import CompareGames from '../components/gamepage/CompareGames';
 import PopUp from '../components/gamepage/popUp';
@@ -15,7 +16,7 @@ import Footer from './Footer';
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const GamePage = () => {
   const [gameDetails, setGameDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,8 @@ const GamePage = () => {
     
     const fetchGame = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/clickgame/${gamename}`);
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/clickgame/${gamename}`);
         if (!response.ok) {
           throw new Error('Failed to fetch game data');
         }
@@ -58,7 +60,7 @@ const GamePage = () => {
   useEffect(() => {
       const fetchRole = async () => {
           try {
-              const response = await fetch(`http://localhost:3000/user/role`, {
+              const response = await fetch(`${backendUrl}/user/role`, {
                   method: 'GET',
                   credentials: 'include',
                   headers: {
@@ -87,7 +89,7 @@ const GamePage = () => {
   useEffect(() => {
     const fetchComparegames = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/comparisons/${gamename}`);
+        const response = await fetch(`${backendUrl}/comparisons/${gamename}`);
         if (!response.ok) {
           throw new Error('Failed to fetch game data');
         }
@@ -154,18 +156,27 @@ const GamePage = () => {
           />
           <InfoContainer game_details={gameDetails} />
         </div>
-        { 
-    role !== 'User' 
-    ? "" 
-    : (
-        <CartPurchase
-          game_name={gameDetails.game_name}
-          game_price={gameDetails.price}
-          game_image={gameDetails.main_image}
-          setPopUp={setPopUp}
-        />
-      )
+        {
+  role === 'User' ? (
+    <CartPurchase
+      game_name={gameDetails.game_name}
+      game_price={gameDetails.price}
+      game_image={gameDetails.main_image}
+      setPopUp={setPopUp}
+    />
+  ) : role === 'admin' ? (
+
+    
+    <AdminDelete
+      game_name={gameDetails.game_name}
+      onDelete={() => {
+        // Handle deletion logic here, e.g., remove the game from the list or show a success message
+        console.log('Game deleted successfully!');
+      }}
+    />
+  ) : ""
 }
+
 
        
         <About game_details={gameDetails} data-aos="fade-up"/>

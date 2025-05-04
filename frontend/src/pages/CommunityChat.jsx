@@ -11,7 +11,8 @@ export default function CommunityChat() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/community/${communityname}`, {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/community/${communityname}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -32,7 +33,8 @@ export default function CommunityChat() {
 
   const handleSend = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/community/${communityname}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/community/${communityname}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

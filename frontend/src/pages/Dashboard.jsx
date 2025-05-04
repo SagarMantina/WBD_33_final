@@ -15,7 +15,8 @@ const Dashboard = () => {
     // Fetch user data (role) when the dashboard is loaded
     const getUserData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/userdata",
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/userdata`,
           {
             method: "GET",
             headers: {

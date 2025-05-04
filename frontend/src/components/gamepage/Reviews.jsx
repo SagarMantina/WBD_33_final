@@ -13,7 +13,8 @@ const Reviews = ({ reviews, curr_rating }) => {
       setShowForm(true);
       
       try {
-        const response = await fetch(`http://localhost:3000/postreview/${gamename}`, {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/postreview/${gamename}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -57,7 +58,8 @@ const Reviews = ({ reviews, curr_rating }) => {
     useEffect(() => {
         const fetchRole = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/userdata`, {
+              const backendUrl = import.meta.env.VITE_BACKEND_URL;
+                const response = await fetch(`${backendUrl}/userdata`, {
                     method: 'GET',
                     credentials: 'include',
                     headers: {

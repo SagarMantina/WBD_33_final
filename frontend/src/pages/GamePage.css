@@ -107,6 +107,28 @@
     color: white;
   }
 
+  .admin-delete-game{
+    width: 50%;
+    position: relative;
+    right: 12%;
+    background: linear-gradient(90deg, rgba(89,94,99,1) 0%, rgba(37,39,40,1) 0%, rgba(55,61,64,1) 57%, rgba(145,166,184,1) 100%, rgba(205,216,224,1) 100%);
+    border-radius: 8px; /* Rounded corners */
+    padding: 2px; /* Inner padding */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    backdrop-filter: blur(10px); /* Background blur */
+    -webkit-backdrop-filter: blur(15px); /* For Safari */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Border for the frosted effect */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content:end;
+  }
+
+  .admin-delete-game button{
+    background-color: red;
+    width: 40%;
+  }
+
   .cartpurchase h1{
     position: relative;
     left: 5%;

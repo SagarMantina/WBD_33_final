@@ -253,6 +253,7 @@ import Header from './Header';
 import Footer from './Footer';
 import { toast, ToastContainer } from 'react-toastify';
 import { useCartStore } from '../store/cartStore';
+
 const CartPage = () => {
   const { removeFromCart , clearCart } = useCartStore();
   const [status, setStatus] = useState('loading');
@@ -266,7 +267,8 @@ const CartPage = () => {
     const fetchCartGames = async () => {
       try {
         setStatus('loading');
-        const response = await fetch('http://localhost:3000/getcartgames', {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/getcartgames`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -296,7 +298,8 @@ const CartPage = () => {
 
   const handleRemoveGame = async (gameName) => {
     try {
-      const response = await fetch('http://localhost:3000/removetocart', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/removetocart`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -355,7 +358,7 @@ const CartPage = () => {
     try {
       const responses = await Promise.all(
         cart.map(game => 
-          fetch('http://localhost:3000/removetocart', {
+          fetch(`${backendUrl}/removetocart`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',

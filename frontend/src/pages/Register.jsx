@@ -6,7 +6,7 @@ import { FaEnvelope, FaUser, FaKey } from 'react-icons/fa';
 import styles from "../styles/Register.module.css";
 import Header from './Header';
 import Footer from './Footer';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const Register = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -48,7 +48,7 @@ const Register = () => {
       return;
     }
 
-    const response = await fetch("http://localhost:3000/register", {
+    const response = await fetch(`${backendUrl}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

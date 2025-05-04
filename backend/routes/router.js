@@ -9,7 +9,7 @@ const game_details = require("../models/gameschema");
 router.use(cookieparser());
 router.use(express.static(path.join(__dirname, "public")));
 
-const { deleteGame, updateGame } = require("../controllers/sellerController");
+const { sellerdeleteGame, updateGame } = require("../controllers/sellerController");
 const { adminRoute } = require("../middleware/authRoute");
 
 const { getSellerdata ,  sellGame, getsellerMyGames,getsellerTransactions} = require("../controllers/sellerController");
@@ -53,7 +53,9 @@ const { homeGames , getcategories, searchgames } = require("../controllers/homeC
 const {getGames } = require("../controllers/adminController");
 const {  getaTransactions} = require("../controllers/dashboardController");
 
-const {deletegame} = require("../controllers/dashboardController"); 
+const {admindeletegame} = require("../controllers/dashboardController"); 
+
+
 const {authRoute} = require("../middleware/authRoute");
 const {admin_update_user, admin_create_user, admin_delete_user,admin_delete_community_message,admin_delete_community} = require("../controllers/adminController");
 const  {getRole} = require("../controllers/userController");
@@ -142,7 +144,7 @@ router.post("/updateuser", updateuserdetails);
 
 
 
-// router.post("/deletegame", deletegame);
+router.post("/admin/delete_game", admindeletegame);
 
 
 /**
@@ -694,7 +696,7 @@ router.get("/api/top-revenue",getTopRevenueGames)
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Username not found" or "Incorrect password"
+ *                   example: "Username not found or Incorrect password"
  *       500:
  *         description: Internal server error.
  *         content:
@@ -763,7 +765,7 @@ router.post("/login", postlogin);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Username already exists" or "Email already exists" or "Please Enter same Password"
+ *                   example: "Username already exists or Email already exists or Please Enter same Password"
  *       500:
  *         description: Internal server error.
  *         content:
@@ -1112,7 +1114,7 @@ router.get("/community", getCommunity);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Community not found." or "User not found."
+ *                   example: "Community not found. or User not found."
  *       500:
  *         description: Internal server error.
  *         content:
@@ -1185,7 +1187,7 @@ router.get("/community/:community", getcommunityChat);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Community not found." or "User not found."
+ *                   example: "Community not found. or User not found."
  *       500:
  *         description: Internal server error.
  *         content:
@@ -1673,7 +1675,7 @@ router.get("/user/transactions", getuserTransactions);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "PLEASE DO LOGIN!!!" or "No games found for this user."
+ *                   example: "PLEASE DO LOGIN!!! or No games found for this user."
  *       500:
  *         description: Internal server error.
  *         content:
@@ -2161,7 +2163,7 @@ router.get("/categories", getcategories);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Successfully purchased the game" or "User has already purchased the game"
+ *                   example: "Successfully purchased the game or User has already purchased the game"
  *       404:
  *         description: User not logged in.
  *         content:
@@ -2216,7 +2218,7 @@ router.post("/paygame", paygame);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Cart is empty" or "Invalid game entry in cart"
+ *                   example: "Cart is empty or Invalid game entry in cart"
  *       404:
  *         description: User not logged in, user not found, or game not found.
  *         content:
@@ -2226,7 +2228,7 @@ router.post("/paygame", paygame);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Please Login To Purchase" or "User not found" or "Game {game_name} not found"
+ *                   example: "Please Login To Purchase or User not found or Game {game_name} not found"
  *       500:
  *         description: Internal server error.
  *         content:
@@ -2299,7 +2301,7 @@ router.get("/check/:username",checkUser);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Please login to post a review!" or "You have already reviewed and rated the game!"
+ *                   example: "Please login to post a review! or You have already reviewed and rated the game!"
  *       404:
  *         description: Game not found.
  *         content:
@@ -2493,7 +2495,7 @@ router.get("/getcartgames",authRoute, getcartgames);
  *               properties:
  *                 errorMessage:
  *                   type: string
- *                   example: "Login First To get Acess of the cart" or "Game Not Found"
+ *                   example: "Login First To get Acess of the cart or Game Not Found"
  *       500:
  *         description: Internal server error.
  *         content:
@@ -2557,7 +2559,7 @@ router.delete("/removetocart",authRoute, removetocart);
  *               type: string
  *               example: "Internal Server Error"
  */
-router.delete("seller/delete_game/:gameId", deleteGame);
+router.delete("/seller/delete_game/:gameId", sellerdeleteGame);
 
 
 /**

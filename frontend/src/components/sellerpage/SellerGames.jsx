@@ -27,7 +27,8 @@ const UserGames = () => {
 
   const fetchGames = async () => {
     try {
-      const response = await fetch('http://localhost:3000/seller/mygames', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/seller/mygames`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +68,8 @@ const UserGames = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/seller/update_game/${selectedGame._id}`, {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/seller/update_game/${selectedGame._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +98,8 @@ const UserGames = () => {
   const handleDeleteGame = async (gameId) => {
     if (window.confirm('Are you sure you want to delete this game?')) {
       try {
-        const response = await fetch(`http://localhost:3000/seller/delete_game/${gameId}`, {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/seller/delete_game/${gameId}`, {
           method: 'DELETE',
           credentials: 'include',
         });
@@ -115,9 +118,9 @@ const UserGames = () => {
   };
 
   return (
-    <div className="games-page">
+    <div className="admin-games-page">
       <h1>Manage Your Games</h1>
-      <div className="gameslist">
+      <div className="admin-gameslist">
         {games.map((game) => (
           <div key={game._id} className="game-item">
             <div className="game-content" onClick={() => handleGameClick(game)}>

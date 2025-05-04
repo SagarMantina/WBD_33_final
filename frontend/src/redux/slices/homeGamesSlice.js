@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import redis_client from '../../../../backend/redis_client';"../../../../backend/redis_client";
 // Initial state
+const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 const initialState = {
   highlightGames: [],
   featuredGames: [],
@@ -16,7 +17,7 @@ export const fetchHomeGames = createAsyncThunk(
   'homeGames/fetchHomeGames',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:3000/api/games', {
+      const response = await fetch(`${backendUrl}/api/games`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -29,6 +30,7 @@ export const fetchHomeGames = createAsyncThunk(
       }
 
       const data = await response.json();
+      console.log(data);
       return data; // Assuming API returns an object with all game categories
     } catch (error) {
       return rejectWithValue(error.message || 'Error fetching home games');

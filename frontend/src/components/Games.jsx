@@ -10,7 +10,8 @@ const Games = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch('http://localhost:3000/allgames'); // Replace with your API endpoint
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/allgames`); // Replace with your API endpoint
         const data = await response.json();
         setGames(data);
       } catch (error) {
@@ -41,9 +42,9 @@ const Games = () => {
 
 
   return (
-    <div className="games-page">
+    <div className="admin-games-page">
       <h1>Games List</h1>
-      <div className="gameslist">
+      <div className="admin-gameslist">
         {currentGames.map((game) => (
           <GameCard key={game._id} game_details={game}  showcart={false} />
         ))}

@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers, faEye, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -28,7 +29,7 @@ const Users = () => {
 
  
   useEffect(() => {
-    fetch("http://localhost:3000/admin/all_users", {
+    fetch(`${backendUrl}/admin/all_users`, {
       credentials: "include", 
     })
       .then((response) => response.json())
@@ -43,7 +44,7 @@ const Users = () => {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/admin/delete_user", {
+      const response = await fetch(`${backendUrl}/admin/delete_user`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -64,7 +65,7 @@ const Users = () => {
  
   const handleCreateUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/admin/create_user", {
+      const response = await fetch(`${backendurl}/admin/create_user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -85,7 +86,7 @@ const Users = () => {
   
   const handleUpdateUser = async () => {
     try {
-      const response = await fetch("http://localhost:3000/admin/update_user", {
+      const response = await fetch(`${backendUrl}/admin/update_user`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include", 
@@ -107,7 +108,7 @@ const Users = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/allusers", {
+        const response = await fetch(`${backendUrl}/allusers`, {
           credentials: "include", 
         });
         const data = await response.json();

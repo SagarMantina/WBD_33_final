@@ -6,14 +6,15 @@ import './ProfilePage.css'
 import Header from './Header'
 import Footer from './Footer';
 import { useCartStore } from '../store/cartStore';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const ProfilePage = () => {
   const [usernav,setUserNav] = useState("AccountDetails");
   const {clearCart} = useCartStore();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/signout', {
+      
+      const response = await fetch(`${backendUrl}/signout`, {
         method: 'GET',
         credentials: 'include', 
       });

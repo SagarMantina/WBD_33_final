@@ -145,8 +145,8 @@ const CartPurchase = ({ game_name, game_price, setPopUp }) => {
   const handleAddToCart = async () => {
     try {
       setStatus('loading');
-
-      const response = await fetch('http://localhost:3000/addtocart', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/addtocart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

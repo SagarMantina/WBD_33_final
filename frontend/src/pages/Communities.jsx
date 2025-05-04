@@ -38,7 +38,7 @@ export default function Communities() {
     const fetchData = async () => {
       try {
         // Fetch all communities
-        const responseAll = await fetch("http://localhost:3000/community", {
+        const responseAll = await fetch(`${backendUrl}/community`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function Communities() {
         setAllCommunities(allData);
 
         // Fetch user's communities
-        const responseUser = await fetch("http://localhost:3000/user/communities", {
+        const responseUser = await fetch(`${backendUrl}/user/communities`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export default function Communities() {
   }, []);
 
   const handleJoin = (communityName) => {
-    fetch("http://localhost:3000/joincommunity", {
+    fetch(`${backendUrl}/joincommunity`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,12 +81,12 @@ export default function Communities() {
       })
       .catch((err) => console.error(err));
   };
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const handleCreate = (e) => {
     e.preventDefault();
 
     // Send community name and description to the backend
-    fetch("http://localhost:3000/createcommunity", {
+    fetch(`${backendUrl}/createcommunity`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

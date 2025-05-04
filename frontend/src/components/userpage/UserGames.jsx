@@ -146,7 +146,8 @@ const UserGames = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch('http://localhost:3000/user/mygames', {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/user/mygames`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -182,12 +183,12 @@ const UserGames = () => {
           {games.map((game, index) => (
             <div key={index} className={styles.usergameCard}>
               <img src={game.poster} alt={game.game_name} className={styles.poster} />
-              <div className={styles.gameDetails}>
-                <h2 className={styles.gameName}>{game.game_name}</h2>
-                <p className={styles.category}>Category: {game.category}</p>
-                <p className={styles.ratings}>Ratings: {game.rating}</p>
-                <p className={styles.seller}>Seller: {game.seller}</p>
-              </div>
+                <div className={styles.gameDetails}>
+                  <h2 className={styles.gameName}>{game.game_name}</h2>
+                  <p className={styles.category}>Category: {game.category}</p>
+                  <p className={styles.ratings}>Ratings: {game.rating}</p>
+                  <p className={styles.seller}>Seller: {game.seller}</p>
+                </div>
             </div>
           ))}
         </div>

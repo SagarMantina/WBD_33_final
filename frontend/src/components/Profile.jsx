@@ -44,7 +44,8 @@ const Profile = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/updateuser', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/updateuser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

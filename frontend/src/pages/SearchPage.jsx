@@ -49,7 +49,7 @@
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Header from './Header';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const SearchPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -59,7 +59,7 @@ const SearchPage = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/games?term=${term}`);
+        const response = await fetch(`${backendUrl}/games?term=${term}`);
         const data = await response.json();
         console.log(data);
         setGames(data);

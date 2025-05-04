@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 // Initial state
 const initialState = {
   user: null, // User data
@@ -12,7 +12,7 @@ export const fetchUserData = createAsyncThunk(
   "user/fetchUserData",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:3000/userdata", {
+      const response = await fetch(`${backendUrl}/userdata`, {
         method: "GET",
         credentials: "include", // Include cookies
         headers: {

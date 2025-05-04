@@ -15,7 +15,8 @@ const AdminPage = () => {
   
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/signout', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/signout`, {
         method: 'GET',
         credentials: 'include', 
       });

@@ -26,7 +26,8 @@ const GameCard = ({ game_details}) => {
     
       const getUserData = async () => {
         try {
-          const response = await fetch("http://localhost:3000/user/role",
+          const backendUrl = import.meta.env.VITE_BACKEND_URL;
+          const response = await fetch(`${backendUrl}/user/role`,
             {
               method: "GET",
               headers: {
@@ -56,7 +57,8 @@ const GameCard = ({ game_details}) => {
 
   const handleDelete = async (game_name) => {
     try {
-      const response = await fetch('http://localhost:3000/deletegame', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backend}/admin/deletegame`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +82,8 @@ const GameCard = ({ game_details}) => {
   }
   const handleCart = async (game_name) => {
     try {
-        const response = await fetch('http://localhost:3000/addtocart', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/addtocart`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

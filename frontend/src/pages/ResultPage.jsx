@@ -101,7 +101,7 @@ import { useLocation } from 'react-router-dom';
 
 import Header from './Header';
 import Footer from './Footer'
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const ResultPage = () => {
     const [searchedGames, setSearchedGames] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -117,7 +117,7 @@ const ResultPage = () => {
     useEffect(() => {
         const fetchSearchedGames = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/searchgames?term=${searchTerm}`);
+                const response = await fetch(`${backendUrl}/searchgames?term=${searchTerm}`);
                 const data = await response.json();
                 setSearchedGames(data);
             } catch (error) {

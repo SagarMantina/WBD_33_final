@@ -3,14 +3,14 @@ import '../styles/CommunityManager.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const CommunityManager = () => {
   const [communities, setCommunities] = useState([]);
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     // Fetch all communities
-    fetch("http://localhost:3000/community", {
+    fetch(`${backendUrl}/community`, {
       credentials: "include",
     })
       .then((response) => response.json())
@@ -24,7 +24,8 @@ const CommunityManager = () => {
 
   const handleDeleteCommunity = async (communityId) => {
     try {
-      const response = await fetch("http://localhost:3000/admin/delete_community", {
+      
+      const response = await fetch(`${backendUrl}/admin/delete_community`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -46,7 +47,7 @@ const CommunityManager = () => {
     try {
         console.log(communityId);
 
-      const response = await fetch("http://localhost:3000/admin/delete_community_message", {
+      const response = await fetch(`${backendUrl}/admin/delete_community_message`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

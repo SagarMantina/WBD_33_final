@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 // import ProfilePage from './pages/ProfilePage';
 
 // import SellerPage from './pages/SellerPage';
-import TestPage from './pages/testPage';
+
 import ResultPage from './pages/ResultPage';
 import GamePage from './pages/GamePage';
 import CartPage from './pages/CartPage';
@@ -54,7 +54,7 @@ function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/test" element={<TestPage />} />
+
         <Route path="/" element={<HomePage />} />
         <Route path ="/home"  element={<HomePage />} />
         <Route path='/about' element={<About />} />

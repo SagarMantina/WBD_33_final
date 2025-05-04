@@ -1,5 +1,6 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
 // Initial state
 const initialState = {
@@ -13,7 +14,7 @@ export const fetchCartGames = createAsyncThunk(
   'cart/fetchCartGames',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:3000/getcartgames', {
+      const response = await fetch(`${backendUrl}/getcartgames`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +39,7 @@ export const addToCart = createAsyncThunk(
   'cart/addToCart',
   async (game, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:3000/addtocart', {
+      const response = await fetch(`${backendUrl}/addtocart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ export const removeFromCart = createAsyncThunk(
   'cart/removeFromCart',
   async (game, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:3000/removetocart', {
+      const response = await fetch(`${backendUrl}/removetocart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

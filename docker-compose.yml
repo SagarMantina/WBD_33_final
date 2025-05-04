@@ -1,8 +1,8 @@
-version: "3.8"
-
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+    image: wbd_backend
     ports:
       - "5000:5000"
     environment:
@@ -11,17 +11,26 @@ services:
     depends_on:
       - redis
       - solr
+    networks:
+      - wbdnet
+
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+    image: wbd_frontend
     ports:
       - "3000:3000"
     depends_on:
       - backend
+    networks:
+      - wbdnet
 
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - wbdnet
 
   solr:
     image: solr
@@ -30,3 +39,9 @@ services:
     command:
       - solr-precreate
       - mycore
+    networks:
+      - wbdnet
+
+networks:
+  wbdnet:
+

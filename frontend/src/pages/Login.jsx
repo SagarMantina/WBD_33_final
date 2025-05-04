@@ -35,7 +35,8 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/login', { // Ensure correct URL
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/login`, { // Ensure correct URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

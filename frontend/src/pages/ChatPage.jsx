@@ -28,8 +28,8 @@ const ChatPage = () => {
 
   const handleDirectMessage = async() => {
     if (!contactInput.trim() || !directMessage.trim()) return;
-
-    const response = await fetch(`http://localhost:3000/check/${contactInput}`, {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const response = await fetch(`${backendUrl}/check/${contactInput}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const ChatPage = () => {
 }
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io(`${backendUrl}`, {
       withCredentials: true,
     });
     setSocket(newSocket);
@@ -87,18 +87,18 @@ const ChatPage = () => {
 
     return () => newSocket.close();
   }, [currentUser]);
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     axios
-      .get("http://localhost:3000/contacts", { withCredentials: true })
+      .get(`${backendUrl}/contacts`, { withCredentials: true })
       .then((response) => setContacts(response.data))
       .catch((error) => console.error("Error fetching contacts:", error));
   }, []);
-
+  
   useEffect(() => {
     if (selectedContact) {
       axios
-        .get(`http://localhost:3000/messages/${selectedContact}`, { withCredentials: true })
+        .get(`${backendUrl}/messages/${selectedContact}`, { withCredentials: true })
         .then((response) => setMessages(response.data))
         .catch((error) => console.error("Error fetching messages:", error));
     }

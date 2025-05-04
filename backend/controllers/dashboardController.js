@@ -69,7 +69,7 @@ async function signout(req,res){
 // }
 
 
-async function deletegame(req, res) {
+async function admindeletegame(req, res) {
   try {
     const gameName = req.body.game_name;
     const deletedGame = await game_details.deleteOne({ name: gameName });
@@ -166,4 +166,4 @@ async function getsTransactions(req,res) {
 
 
 
-module.exports={getuserdata,signout,getaTransactions,getsTransactions,getuTransactions,deletegame,geteveryUser};
+module.exports={getuserdata,signout,getaTransactions,getsTransactions,getuTransactions,admindeletegame,geteveryUser};

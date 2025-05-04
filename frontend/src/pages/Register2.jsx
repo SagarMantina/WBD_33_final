@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Register2.css';
 import Header from './Header';
 import Footer from './Footer';
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const Register2 = () => {
   const [formData, setFormData] = useState({
     dateOfBirth: '',
@@ -30,7 +30,7 @@ const Register2 = () => {
     e.preventDefault();
 
     // Handle form submission logic here
-    const response = await fetch("http://localhost:3000/register2", {
+    const response = await fetch(`${backendUrl}/register2`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

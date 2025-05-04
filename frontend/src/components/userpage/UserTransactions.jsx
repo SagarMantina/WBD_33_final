@@ -9,7 +9,8 @@ const UserTransactions = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch('http://localhost:3000/user/transactions', {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/user/transactions`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

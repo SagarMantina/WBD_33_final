@@ -6,14 +6,14 @@ import SellerDashboard from '../components/sellerpage/SellerDashboard';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Header from './Header';
 import Footer from './Footer'
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const SellerPage = () => {
   const [sellnav, setSellNav] = useState("Dashboard");
   
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/signout', {
+      const response = await fetch(`${backendUrl}/signout`, {
         method: 'GET',
         credentials: 'include', 
       });

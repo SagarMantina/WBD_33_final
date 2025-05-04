@@ -63,7 +63,8 @@ const Sell = () => {
     e.preventDefault();
   
     try {
-      const response = await fetch("http://localhost:3000/sell/games", {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendurl}/sell/games`, {
 
         method: "POST",
         credentials: 'include', 
