@@ -13,10 +13,10 @@ let arr = authController.arr;
 
 async function getuserdata(req,res){
     const username = req.cookies.username;
-
+    console.log("userdata username",username);
     try {
       const db_user = await user.findOne({ username });
-      res.json(db_user);
+      res.status(200).json(db_user);
     } catch (error) {
       res.status(401).json({ errorMessage: "Internal server error" });
     }
