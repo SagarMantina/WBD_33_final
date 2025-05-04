@@ -8,6 +8,7 @@ import Header from './Header';
 import Footer from './Footer'
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const SellerPage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [sellnav, setSellNav] = useState("Dashboard");
   
 
@@ -23,8 +24,16 @@ const SellerPage = () => {
       });
 
      
-     
-        window.location.href = ('/login');
+      if(response.ok) {
+        if(response.ok) {
+          localStorage.removeItem('username'); // Remove username from local storage
+       
+           if(localStorage.getItem('username') === null) {
+           
+            navigate('/login'); // Redirect to login page 
+           }
+        }
+      }
      
     } catch (error) {
       console.error("Error during logout:", error);

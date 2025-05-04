@@ -10,7 +10,7 @@ import Header from './Header';
 import Footer from './Footer'
 
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = 'https://p2p-final-backend.onrender.com';
+const backendUrl = 'https://p2p-final-backend.onrender.com'; // Replace with your backend URL
 const Login = () => {
   const [form, setForm] = useState({
     username: '',
@@ -40,6 +40,7 @@ const Login = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username'), // send from localStorage
         },
         credentials: 'include',
         body: JSON.stringify({
