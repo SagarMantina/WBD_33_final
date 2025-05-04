@@ -16,6 +16,7 @@ export default function CommunityChat() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            'x-username': localStorage.getItem('username')
           },
           credentials: "include",
         });
@@ -38,6 +39,7 @@ export default function CommunityChat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'x-username': localStorage.getItem('username')
         },
         body: JSON.stringify({ message: newMessage }),
         credentials: "include",

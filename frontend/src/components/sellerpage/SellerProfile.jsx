@@ -2,7 +2,11 @@ import React from 'react'
 import { useState,useEffect } from 'react';
 import { FaRegCircleUser } from "react-icons/fa6";
 import styles from '../../styles/userstyles/UserProfile.module.css'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+
+const backendurl = import.meta.env.VITE_BACKEND_URL;
 const SellerProfile = () => {
  // State for storing profile information and edit form data
  const [profile, setProfile] = useState(null);
@@ -14,34 +18,34 @@ const SellerProfile = () => {
 
  // Fetch user data from the API when the component mounts
  useEffect(() => {
-   const fetchProfileData = async () => {
-     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-       const response = await fetch(`${backendUrl}/userdata`, {
-         method: 'GET',
-         headers: {
-           'Content-Type': 'application/json',
-         },
-         credentials: 'include', // Include credentials for sending cookies
-       });
- 
-       if (response.ok) {
-         const data = await response.json();
-         setProfile(data);
-
-         // Initialize edit form fields with fetched data
-         setEditProfile({
-           username: data.username,
-           email: data.email,
-           password: '' // Reset password field
-         });
-       } else {
-         console.error("Failed to fetch profile data");
-       }
-     } catch (error) {
-       console.error("Error fetching profile data:", error);
-     }
-   };
+  const fetchProfileData = async () => {
+        try {
+          const response = await fetch(`${backendurl}/userdata`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-username': localStorage.getItem('username'),
+            },
+            credentials: 'include',
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            setProfile(data);
+            setEditProfile({
+              username: data.username,
+              email: data.email,
+              password: ''
+            });
+          } else {
+            toast.error("Failed to fetch profile data.");
+          }
+        } catch (error) {
+          toast.error("Error fetching profile data.");
+          console.error("Error:", error);
+        }
+      };
+  
  
    fetchProfileData();
  }, []);
@@ -63,6 +67,7 @@ const SellerProfile = () => {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username'), // Include username in headers
        },
        body: JSON.stringify({
          username: editProfile.username,
@@ -97,6 +102,7 @@ const SellerProfile = () => {
 
  return (
    <div className={styles["profile-page"]}>
+   <ToastContainer position="top-center" />
      <h1>Profile</h1>
 
      {/* Display Profile Information */}

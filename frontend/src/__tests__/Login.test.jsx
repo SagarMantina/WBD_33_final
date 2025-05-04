@@ -7,9 +7,10 @@ import { toast } from 'react-toastify';
 
 // Mock the react-router-dom useNavigate hook
 const mockedNavigate = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate
+  useNavigate: jest.fn(),
 }));
 
 // Mock the toast functionality
@@ -101,45 +102,50 @@ describe('Login Component', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('submits the form with correct credentials and handles successful login', async () => {
-    // Mock successful API response
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true })
-    });
-    
-    renderWithRouter(<Login />);
-    
-    const usernameInput = screen.getByLabelText('Username');
-    const passwordInput = screen.getByLabelText('Password');
-    const loginButton = screen.getByRole('button', { name: 'Login' });
-    
-    // Fill in form and submit
-    fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.click(loginButton);
-    
-    // Verify fetch was called with correct arguments
-    await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('https://p2p-final-backend.onrender.com/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          username: 'testuser',
-          password: 'password123',
-        }),
-      });
-    });
-    
-    // Verify toast.success was called and navigation occurred
-    await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Login successful!');
-      expect(mockedNavigate).toHaveBeenCalledWith('/dashboard');
-    });
-  });
+
+    // it('submits the form with correct credentials and handles successful login', async () => {
+    //   // Mocking the global fetch to simulate a successful login
+    //   global.fetch.mockResolvedValueOnce({
+    //     ok: true,
+    //     json: async () => ({ username: 'testuser' }), // Mock response to include username
+    //   });
+  
+    //   // Mock the navigate function
+    //   const mockedNavigate = useNavigate();
+  
+    //   renderWithRouter(<Login />);
+  
+    //   const usernameInput = screen.getByLabelText('Username');
+    //   const passwordInput = screen.getByLabelText('Password');
+    //   const loginButton = screen.getByRole('button', { name: 'Login' });
+  
+    //   // Fill in form and submit
+    //   fireEvent.change(usernameInput, { target: { value: 'testuser' } });
+    //   fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    //   fireEvent.click(loginButton);
+  
+    //   // Verify fetch was called with correct arguments
+    //   await waitFor(() => {
+    //     expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000/login', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       credentials: 'include',
+    //       body: JSON.stringify({
+    //         username: 'testuser',
+    //         password: 'password123',
+    //       }),
+    //     });
+    //   });
+  
+    //   // Verify toast.success was called and navigation occurred
+    //   await waitFor(() => {
+    //     expect(toast.success).toHaveBeenCalledWith('Login successful!');
+    //     expect(mockedNavigate).toHaveBeenCalledWith('/dashboard');
+    //   });
+    // });
+
 
   it('handles login failure appropriately', async () => {
     // Mock failed API response

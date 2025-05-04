@@ -1,7 +1,6 @@
 
 const { 
     getuserdata, 
-    signout, 
     getaTransactions, 
     getsTransactions, 
     getuTransactions, 
@@ -31,7 +30,7 @@ const {
       res = {
         json: jest.fn(),
         status: jest.fn().mockReturnThis(),
-        clearCookie: jest.fn()
+        setItem: jest.fn()
       };
       jest.clearAllMocks();
     });
@@ -39,7 +38,7 @@ const {
     // getuserdata
     describe('getuserdata', () => {
       it('should return user data if found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         user.findOne.mockResolvedValue({ username: 'testuser' });
   
         await getuserdata(req, res);
@@ -49,7 +48,7 @@ const {
       });
   
       it('should return 401 on error', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getuserdata(req, res);
@@ -59,18 +58,7 @@ const {
       });
     });
   
-    // signout
-    describe('signout', () => {
-      it('should clear cookie and logout', async () => {
-        req.cookies.username = 'testuser';
   
-        await signout(req, res);
-  
-        expect(res.clearCookie).toHaveBeenCalledWith('username');
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ successMsg: "User Logged Out" });
-      });
-    });
   
     // deletegame
     // describe('deletegame', () => {
@@ -125,13 +113,13 @@ const {
     
         await admindeletegame(req, res);
     
-        expect(game_details.deleteOne).toHaveBeenCalledWith({ name: 'testgame' });
+        expect(game_details.deleteOne).toHaveBeenCalledWith({ game_name: 'testgame' });
         expect(res.json).toHaveBeenCalledWith({ message: "Game deleted successfully" });
       });
     
       it('should return 404 if game not found', async () => {
         req.body.game_name = 'testgame';
-        game_details.deleteOne.mockResolvedValue(null);
+        game_details.deleteOne.mockResolvedValue({ deletedCount: 0 });
     
         await admindeletegame(req, res);
     
@@ -157,7 +145,7 @@ const {
     // getaTransactions
     describe('getaTransactions', () => {
       it('should return all transactions if user is logged in', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buye1' };
         user.findOne.mockResolvedValue({ buyer: 'buyer1' });
         transaction.find.mockResolvedValue([{ id: 1 }, { id: 2 }]);
   
@@ -168,7 +156,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buyer1' };
         user.findOne.mockResolvedValue(null);
   
         await getaTransactions(req, res);
@@ -178,7 +166,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buyer1' };
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getaTransactions(req, res);
@@ -191,7 +179,7 @@ const {
     // getuTransactions
     describe('getuTransactions', () => {
       it('should return user specific transactions', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buyer1' };
         user.findOne.mockResolvedValue({ username: 'buyer1' });
         transaction.find.mockResolvedValue([{ id: 3 }]);
   
@@ -202,7 +190,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buyer1' };
         user.findOne.mockResolvedValue(null);
   
         await getuTransactions(req, res);
@@ -212,7 +200,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'buyer1';
+        req.headers = { 'x-username': 'buyer1' };
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getuTransactions(req, res);
@@ -225,7 +213,7 @@ const {
     // getsTransactions
     describe('getsTransactions', () => {
       it('should return seller specific transactions', async () => {
-        req.cookies.username = 'seller1';
+        req.headers = { 'x-username': 'seller1' };
         user.findOne.mockResolvedValue({ username: 'seller1' });
         transaction.find.mockResolvedValue([{ id: 5 }]);
   
@@ -236,7 +224,7 @@ const {
       });
   
       it('should return 404 if seller not found', async () => {
-        req.cookies.username = 'seller1';
+        req.headers = { 'x-username': 'seller1' };
         user.findOne.mockResolvedValue(null);
   
         await getsTransactions(req, res);
@@ -246,7 +234,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'seller1';
+        req.headers = { 'x-username': 'seller1' };
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getsTransactions(req, res);

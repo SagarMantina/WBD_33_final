@@ -52,6 +52,7 @@ const Publish = () => {
         credentials: 'include', 
         headers: {
           "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"),
         },
         body: JSON.stringify({
           gameName: formData.gameName,

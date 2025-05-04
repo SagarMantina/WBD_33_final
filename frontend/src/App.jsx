@@ -25,6 +25,8 @@ import Unauthorized from './pages/ErrorPage';
 import { useCartStore } from './store/cartStore';
 import { useEffect } from 'react';
 // import ProfilePage from './pages/ProfilePage';
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;// Replace with your backend URL
 function App() {
   const setCart = useCartStore((state) => state.setCart);
    
@@ -32,9 +34,13 @@ function App() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const response = await fetch('http://localhost:3000/userdata', {
+        const response = await fetch(`${backendUrl}/userdata`, {
           method: 'GET',
           credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-username': document.cookie.split('=')[1] || '', // Get the username from cookies
+          },
         });
         if (!response.ok) {
           console.error('Failed to fetch cart data');

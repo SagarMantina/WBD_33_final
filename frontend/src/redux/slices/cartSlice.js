@@ -18,6 +18,7 @@ export const fetchCartGames = createAsyncThunk(
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          "x-username": localStorage.getItem('username'), // send from localStorage
         },
         credentials: 'include',
       });
@@ -43,6 +44,7 @@ export const addToCart = createAsyncThunk(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          "x-username": localStorage.getItem('username'), // send from localStorage
         },
         body: JSON.stringify({ cart_games: { game_name: game } }), 
         credentials: 'include',
@@ -74,6 +76,7 @@ export const removeFromCart = createAsyncThunk(
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          "x-username": localStorage.getItem('username'), // send from localStorage
         },
         body: JSON.stringify({ cart_games: game }),
         credentials: 'include',

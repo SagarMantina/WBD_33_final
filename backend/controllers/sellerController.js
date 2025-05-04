@@ -7,7 +7,7 @@ const transaction = require("../models/transactionSchema");
 
 const getSellerdata = async (req, res) =>{
   try {
-    const username = await req.cookies.username;
+    const username = req.headers['x-username'];
 
     const seller = await user.findOne({ username: username });
     if (seller) {
@@ -23,7 +23,7 @@ const getSellerdata = async (req, res) =>{
 
 const sellGame = async (req, res) => {
   try {
-    const username = req.cookies.username;
+    const username = req.headers['x-username'];
     const activeuser = await user.findOne({ username: username });
 
     if (activeuser) {
@@ -64,7 +64,8 @@ const sellGame = async (req, res) => {
 
 const getsellerTransactions = async (req, res) => {
   try {
-    const transactions = await transaction.find({seller: req.cookies.username});
+    const username = req.headers['x-username'];
+    const transactions = await transaction.find({seller: username});
     res.json(transactions);
   } catch (err) {
     console.log(err);
@@ -73,7 +74,7 @@ const getsellerTransactions = async (req, res) => {
 }
 const getsellerMyGames = async (req, res) => {
   try {
-    const username = await req.cookies.username;
+    const username = req.headers['x-username'];
     const exists = await user.findOne({ username: username });
     
     if (!exists) {
@@ -129,7 +130,7 @@ const sellerdeleteGame = async (req, res) => {
 
 
     const gameId = req.params.gameId;
-    const username = req.cookies.username;
+    const username = req.headers['x-username'];
 
     const game = await game_details.findOne({ _id: gameId, seller: username });
 

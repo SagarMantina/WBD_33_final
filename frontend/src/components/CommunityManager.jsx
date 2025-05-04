@@ -12,6 +12,11 @@ const CommunityManager = () => {
     // Fetch all communities
     fetch(`${backendUrl}/community`, {
       credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        'x-username': localStorage.getItem('username') // Include username in headers
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -27,7 +32,9 @@ const CommunityManager = () => {
       
       const response = await fetch(`${backendUrl}/admin/delete_community`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , 
+          'x-username': localStorage.getItem('username') // Include username in headers
+         },
         credentials: "include",
         body: JSON.stringify({community_name: communityId }),
       });
@@ -49,7 +56,10 @@ const CommunityManager = () => {
 
       const response = await fetch(`${backendUrl}/admin/delete_community_message`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+           "Content-Type": "application/json" ,
+          'x-username': localStorage.getItem('username') // Include username in headers
+          },
         credentials: "include",
         body: JSON.stringify({ community_name:communityId }),
       });

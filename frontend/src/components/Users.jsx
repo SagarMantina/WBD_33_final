@@ -31,6 +31,11 @@ const Users = () => {
   useEffect(() => {
     fetch(`${backendUrl}/admin/all_users`, {
       credentials: "include", 
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-username": localStorage.getItem("username"),
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -67,7 +72,9 @@ const Users = () => {
     try {
       const response = await fetch(`${backendurl}/admin/create_user`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"),
+         },
         credentials: "include",
         body: JSON.stringify(newUser),
       });
@@ -88,7 +95,9 @@ const Users = () => {
     try {
       const response = await fetch(`${backendUrl}/admin/update_user`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" ,
+          "x-username": localStorage.getItem("username"),
+        },
         credentials: "include", 
         body: JSON.stringify(updateData),
       });
@@ -110,6 +119,11 @@ const Users = () => {
       try {
         const response = await fetch(`${backendUrl}/allusers`, {
           credentials: "include", 
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-username": localStorage.getItem("username"),
+          },
         });
         const data = await response.json();
         setTotalUsers(data.total_users);

@@ -134,6 +134,7 @@ const Transaction = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'x-username': localStorage.getItem('username'), // Include username in headers
           },
           credentials: 'include',
         });

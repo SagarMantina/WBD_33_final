@@ -21,7 +21,7 @@ describe("userController", () => {
   beforeEach(() => {
     req = {
       body: {},
-      cookies: {},
+      headers: {},
       params: {},
     };
     res = {
@@ -29,11 +29,11 @@ describe("userController", () => {
       json: jest.fn(),
       send: jest.fn(),
       cookie: jest.fn(),
-      clearCookie: jest.fn(),
+      setItem: jest.fn(),
     };
     jest.clearAllMocks();
   });
-
+  
   describe("updateuserdetails", () => {
     it("should return 401 if user not found", async () => {
       user.findOne.mockReturnValueOnce({ explain: jest.fn().mockResolvedValue(null) });
@@ -45,30 +45,38 @@ describe("userController", () => {
     it("should update username, email and password successfully", async () => {
       const hashedPassword = await bcrypt.hash("oldpass", 10);
       const userObj = { username: "old", password: hashedPassword, save: jest.fn() };
-      req.cookies.username = "old";
+    
+      req.headers = { 'x-username': 'old' };
       req.body = { name: "newname", email: "new@example.com", password: "newpass" };
-
+    
       user.findOne
-        .mockReturnValueOnce({ explain: jest.fn().mockResolvedValue(true) }) // for first findOne with explain
-        .mockResolvedValueOnce(userObj); // for second actual user
-
-      bcrypt.compare = jest.fn().mockResolvedValue(false); // password is different
-      bcrypt.hash = jest.fn().mockResolvedValue("hashed_new");
-
+        .mockReturnValueOnce({ explain: jest.fn().mockResolvedValue(true) }) // Mocking the first findOne with explain
+        .mockResolvedValueOnce(userObj); // Mock the second findOne to return user object
+    
+      bcrypt.compare = jest.fn().mockResolvedValue(false); // Mock password comparison to return false (passwords are different)
+      bcrypt.hash = jest.fn().mockResolvedValue("hashed_new"); // Mock bcrypt to hash the new password
+    
       await updateuserdetails(req, res);
-
+    
+      // Ensure the user details were updated
       expect(userObj.username).toBe("newname");
       expect(userObj.email).toBe("new@example.com");
       expect(userObj.password).toBe("hashed_new");
       expect(userObj.save).toHaveBeenCalled();
+    
+      // Check the response
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({ message: "User details updated successfully." });
+      expect(res.json).toHaveBeenCalledWith({
+        username: "newname",
+        email: "new@example.com"
+      });
     });
+    
 
     it("should return 401 if password is same", async () => {
       const hashedPassword = await bcrypt.hash("same", 10);
       const userObj = { username: "user", password: hashedPassword, save: jest.fn() };
-      req.cookies.username = "user";
+      req.headers = { 'x-username': 'user' };
       req.body = { password: "same" };
 
       user.findOne
@@ -85,7 +93,7 @@ describe("userController", () => {
 
     it("should return 400 if no fields provided", async () => {
       const userObj = { username: "user", password: "pass", save: jest.fn() };
-      req.cookies.username = "user";
+      req.headers = { 'x-username': 'user' };
       req.body = {};
 
       user.findOne
@@ -101,7 +109,7 @@ describe("userController", () => {
 
   describe("getuserTransactions", () => {
     it("should return transactions", async () => {
-      req.cookies.username = "testuser";
+      req.headers = { 'x-username': 'testuser' };
       const txs = [{ id: 1 }];
       transaction.find.mockResolvedValue(txs);
 
@@ -121,7 +129,7 @@ describe("userController", () => {
 
   describe("getuserMyGames", () => {
     it("should return 404 if user not found", async () => {
-      req.cookies.username = "testuser";
+      req.headers = { 'x-username': 'testuser' };
       user.findOne.mockResolvedValue(null);
 
       await getuserMyGames(req, res);
@@ -130,7 +138,7 @@ describe("userController", () => {
     });
 
     it("should return 404 if no games found", async () => {
-      req.cookies.username = "testuser";
+      req.headers = { 'x-username': 'testuser' };
       user.findOne.mockResolvedValue({ username: "testuser" });
       game_details.find.mockResolvedValue([]);
 
@@ -140,7 +148,7 @@ describe("userController", () => {
     });
 
     it("should return 200 with myGames", async () => {
-      req.cookies.username = "testuser";
+      req.headers = { 'x-username': 'testuser' };
       const games = [{ title: "Game A" }];
       user.findOne.mockResolvedValue({ username: "testuser" });
       game_details.find.mockResolvedValue(games);

@@ -70,6 +70,7 @@ const Sell = () => {
         credentials: 'include', 
         headers: {
           "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"), // Include username in headers
         },
         body: JSON.stringify({
           gameName: formData.gameName,

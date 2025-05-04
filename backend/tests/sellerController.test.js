@@ -26,7 +26,7 @@ const {
       req = {
         body: {},
         params: {},
-        cookies: {}
+        headers: {}
       };
       res = {
         json: jest.fn(),
@@ -39,7 +39,8 @@ const {
     // getSellerdata
     describe('getSellerdata', () => {
       it('should return seller data if user exists', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };
+
         user.findOne.mockResolvedValue({ username: 'sellerUser' });
   
         await getSellerdata(req, res);
@@ -50,7 +51,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };
         user.findOne.mockResolvedValue(null);
   
         await getSellerdata(req, res);
@@ -60,7 +61,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getSellerdata(req, res);
@@ -73,7 +74,7 @@ const {
     // sellGame
     describe('sellGame', () => {
       it('should allow seller to post a new game', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };
         req.body = { gamename: 'NewGame' };
   
         user.findOne.mockResolvedValue({ username: 'sellerUser' });
@@ -87,7 +88,7 @@ const {
       });
   
       it('should return 400 if game already exists', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };
         req.body = { gamename: 'ExistingGame' };
   
         user.findOne.mockResolvedValue({ username: 'sellerUser' });
@@ -100,7 +101,7 @@ const {
       });
   
       it('should return 401 if seller is not logged in', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         user.findOne.mockResolvedValue(null);
   
         await sellGame(req, res);
@@ -110,7 +111,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await sellGame(req, res);
@@ -123,7 +124,7 @@ const {
     // getsellerMyGames
     describe('getsellerMyGames', () => {
       it('should return seller games', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         user.findOne.mockResolvedValue({ username: 'sellerUser' });
         game_details.find.mockResolvedValue([{ game_name: 'Game1' }]);
   
@@ -134,7 +135,7 @@ const {
       });
   
       it('should return 404 if seller not logged in', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         user.findOne.mockResolvedValue(null);
   
         await getsellerMyGames(req, res);
@@ -144,7 +145,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         user.findOne.mockRejectedValue(new Error('DB Error'));
   
         await getsellerMyGames(req, res);
@@ -157,7 +158,7 @@ const {
     // getsellerTransactions
     describe('getsellerTransactions', () => {
       it('should return seller transactions', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         transaction.find.mockResolvedValue([{ buyer: 'buyer1' }]);
   
         await getsellerTransactions(req, res);
@@ -167,7 +168,7 @@ const {
       });
   
       it('should handle internal server error', async () => {
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
         transaction.find.mockRejectedValue(new Error('DB Error'));
   
         await getsellerTransactions(req, res);
@@ -220,7 +221,7 @@ const {
     describe('sellerdeleteGame', () => {
       it('should delete a game successfully', async () => {
         req.params.gameId = '123';
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
   
         game_details.findOne.mockResolvedValue({ _id: '123' });
   
@@ -233,7 +234,7 @@ const {
   
       // it('should return 404 if game not found for deletion', async () => {
       //   req.params.gameId = '123';
-      //   req.cookies.username = 'sellerUser';
+      //   req.headers = { 'x-username': 'sellerUser' };;
   
       //   game_details.findOne.mockResolvedValue(null);
   
@@ -245,7 +246,7 @@ const {
   
       it('should handle internal server error', async () => {
         req.params.gameId = '123';
-        req.cookies.username = 'sellerUser';
+        req.headers = { 'x-username': 'sellerUser' };;
   
         game_details.findOne.mockRejectedValue(new Error('DB Error'));
   

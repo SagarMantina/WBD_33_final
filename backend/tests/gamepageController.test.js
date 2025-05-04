@@ -36,7 +36,7 @@
 //     it('should post a new review successfully', async () => {
 //       req.body = { postreview: 'Great game!', reviewrating: 5 };
 //       req.params = { gamename: 'TestGame' };
-//       req.cookies.username = 'testuser';
+//       req.headers = { 'x-username': 'testuser' };
 
 //       const mockGame = {
 //         game_name: 'TestGame',
@@ -79,7 +79,7 @@
 //     it('should return 401 if user already reviewed', async () => {
 //       req.body = { postreview: 'Good!', reviewrating: 4 };
 //       req.params = { gamename: 'TestGame' };
-//       req.cookies.username = 'testuser';
+//       req.headers = { 'x-username': 'testuser' };
 
 //       const mockGame = {
 //         game_name: 'TestGame',
@@ -205,7 +205,7 @@ describe('Game Controller Functions', () => {
 
   beforeEach(() => {
     req = {
-      cookies: {},
+      headers: {},
       body: {},
       params: {}
     };
@@ -226,7 +226,7 @@ describe('Game Controller Functions', () => {
     it('should post a new review successfully', async () => {
       req.body = { postreview: 'Great game!', reviewrating: 5 };
       req.params = { gamename: 'TestGame' };
-      req.cookies.username = 'testuser';
+      req.headers = { 'x-username': 'testuser' };
 
       const mockGame = {
         game_name: 'TestGame',
@@ -247,7 +247,7 @@ describe('Game Controller Functions', () => {
 
     it('should return 404 if game not found', async () => {
       req.params = { gamename: 'UnknownGame' };
-      req.cookies.username = 'testuser';
+      req.headers = { 'x-username': 'testuser' };
 
       game_details.findOne.mockResolvedValue(null);
 
@@ -259,7 +259,7 @@ describe('Game Controller Functions', () => {
 
     it('should return 401 if user is not logged in', async () => {
       req.params = { gamename: 'TestGame' };
-      req.cookies = {}; // No username
+      req.headers = {}; // No username
       game_details.findOne.mockResolvedValue({});
 
       await postreview(req, res);
@@ -271,7 +271,7 @@ describe('Game Controller Functions', () => {
     it('should return 401 if user already reviewed', async () => {
       req.body = { postreview: 'Good!', reviewrating: 4 };
       req.params = { gamename: 'TestGame' };
-      req.cookies.username = 'testuser';
+      req.headers = { 'x-username': 'testuser' };
 
       const mockGame = {
         game_name: 'TestGame',
@@ -290,7 +290,7 @@ describe('Game Controller Functions', () => {
     it("should handle internal server error", async () => {
       req.body = { postreview: 'Cool', reviewrating: 5 };
       req.params = { gamename: 'TestGame' };
-      req.cookies.username = 'testuser';
+      req.headers = { 'x-username': 'testuser' };
 
       const mockError = new Error("DB error");
 

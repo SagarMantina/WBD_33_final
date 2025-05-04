@@ -14,6 +14,7 @@ const UserTransactions = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'x-username': localStorage.getItem('username'), // Include username in headers
           },
           credentials: 'include', // If you're using authentication cookies
         });

@@ -18,6 +18,7 @@ const Reviews = ({ reviews, curr_rating }) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-username': localStorage.getItem('username'), // Include username in headers
           },
           body: JSON.stringify({
             reviewrating: userReview.rating,
@@ -64,6 +65,7 @@ const Reviews = ({ reviews, curr_rating }) => {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
+                        'x-username': localStorage.getItem('username'), // Include username in headers
                     },
                 });
 

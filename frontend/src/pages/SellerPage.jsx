@@ -16,6 +16,10 @@ const SellerPage = () => {
       const response = await fetch(`${backendUrl}/signout`, {
         method: 'GET',
         credentials: 'include', 
+        headers: {
+          'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username'), // send from localStorage
+        },
       });
 
      

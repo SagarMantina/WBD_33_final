@@ -17,8 +17,8 @@ async function postreview(req, res) {
       return res.status(404).json({ message: "Game not found!" });
     }
 
-    // Check if the user is logged in using cookies
-    const username = req.cookies.username;
+    // Check if the user is logged in 
+    const username = req.headers['x-username'];
     if (!username) {
       return res
         .status(401)

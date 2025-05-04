@@ -58,7 +58,7 @@ const {admindeletegame} = require("../controllers/dashboardController");
 
 const {authRoute} = require("../middleware/authRoute");
 const {admin_update_user, admin_create_user, admin_delete_user,admin_delete_community_message,admin_delete_community} = require("../controllers/adminController");
-const  {getRole} = require("../controllers/userController");
+const  {getRole} = require("../controllers/redisController");
 
 
 router.delete("/admin/delete_user", adminRoute, admin_delete_user);

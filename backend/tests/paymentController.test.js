@@ -14,7 +14,7 @@ describe('Controller Unit Tests', () => {
     beforeEach(() => {
         req = {
             body: {},
-            cookies: {},
+            headers: {},
         };
         res = {
             status: jest.fn().mockReturnThis(),
@@ -25,39 +25,45 @@ describe('Controller Unit Tests', () => {
 
     describe('paygame', () => {
         it('should return error if user not logged in', async () => {
-            req.cookies.username = undefined;
+            req.headers = {}; // instead of undefined
+            req.body = { game_name: "testgame" };
+        
             await paygame(req, res);
             expect(res.status).toHaveBeenCalledWith(404);
             expect(res.json).toHaveBeenCalledWith({ errorMessage: "Please Login To Purchase" });
         });
+        
 
         it('should return message if game already purchased', async () => {
-            req.cookies.username = "testuser";
-            req.body.game_name = "testgame";
-
+            req.headers = { 'x-username': 'testuser' };
+            req.body = { game_name: "testgame" };
+        
             user.findOne.mockResolvedValue({ username: "testuser", purchase: ["testgame"], save: jest.fn() });
             game_details.findOne.mockResolvedValue({ game_name: "testgame" });
-
+        
             await paygame(req, res);
-
+        
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: "User has already purchased the game" });
         });
+        
 
         it('should successfully purchase a game', async () => {
-            req.cookies.username = "testuser";
-            req.body.game_name = "newgame";
-
+            req.headers = { 'x-username': 'testuser' };
+            req.body = { game_name: "newgame" };
+        
             const mockUser = { username: "testuser", purchase: [], save: jest.fn() };
             const mockGame = { game_name: "newgame", quantity_sold: 0, price: 100, seller: "seller1", save: jest.fn() };
             const mockTransactionSave = jest.fn();
-
+        
             user.findOne.mockResolvedValue(mockUser);
             game_details.findOne.mockResolvedValue(mockGame);
+        
+            // Fix the typo here from 'transcation' to 'transaction'
             transaction.mockImplementation(() => ({ save: mockTransactionSave }));
-
+        
             await paygame(req, res);
-
+        
             expect(mockUser.purchase).toContain("newgame");
             expect(mockGame.quantity_sold).toBe(1);
             expect(mockUser.save).toHaveBeenCalled();
@@ -66,11 +72,13 @@ describe('Controller Unit Tests', () => {
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: "Successfully purchased the game" });
         });
+        
+        
     });
 
     describe('cartpaygame', () => {
         it('should return error if cart is empty', async () => {
-            req.cookies.username = "testuser";
+            req.headers = { 'x-username': 'testuser' };
 
             user.findOne.mockResolvedValue({ username: "testuser", cart: [], purchase: [], save: jest.fn() });
 
@@ -81,7 +89,7 @@ describe('Controller Unit Tests', () => {
         });
 
         it('should successfully purchase games from cart', async () => {
-            req.cookies.username = "testuser";
+            req.headers = { 'x-username': 'testuser' };
 
             const mockUser = {
                 username: "testuser",

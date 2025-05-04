@@ -6,15 +6,15 @@ import { CgProfile } from "react-icons/cg";
 const Header = () => {
 
 
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  }
+  // function getCookie(name) {
+  //   const value = `; ${document.cookie}`;
+  //   const parts = value.split(`; ${name}=`);
+  //   if (parts.length === 2) return parts.pop().split(";").shift();
+  //   return null;
+  // }
 
-  const currentUser = getCookie("username");
-
+  // const currentUser = getCookie("username");
+  const currentUser = localStorage.getItem("username");
   return (
     <div className={styles['nav-bar']}>
       <img

@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs");
 
 async function cartpaygame(req, res) {
     try {
-        const username = req.cookies.username;
+        const username = req.headers['x-username'];
         // console.log(username);
 
         if (!username) {
@@ -91,45 +91,44 @@ async function cartpaygame(req, res) {
 
 async function paygame(req, res) {
     try {
-        const data = req.body;
-        let gamename = data.game_name;
-        let username = req.cookies.username;
+        const { game_name } = req.body;
+        const usernameHeader = req.headers['x-username'];
 
-        gamename = await game_details.findOne({ game_name: gamename });
-        username = await user.findOne({ username: username });
-
-        if (username) {
-            if (username.purchase.includes(gamename.game_name)) {
-                res.status(200).json({
-                    message: "User has already purchased the game",
-                });
-            } else {
-                // Add game to user's purchase history
-                username.purchase.push(gamename.game_name);
-                await username.save();
-
-                // Increment the quantity sold for the game
-                gamename.quantity_sold += 1;
-                await gamename.save();
-
-                // Create a new transaction
-                const new_transcation = new transcation({
-                    buyer: username.username,
-                    seller: gamename.seller,
-                    amount: gamename.price,
-                    date: Date.now(),
-                    game_name: gamename.game_name,
-                });
-
-                await new_transcation.save();
-
-                res.status(200).json({
-                    message: "Successfully purchased the game",
-                });
-            }
-        } else {
-            res.status(404).json({ errorMessage: "Please Login To Purchase" });
+        if (!usernameHeader) {
+            return res.status(404).json({ errorMessage: "Please Login To Purchase" });
         }
+
+        const game = await game_details.findOne({ game_name });
+        const userDoc = await user.findOne({ username: usernameHeader });
+
+        if (!userDoc) {
+            return res.status(404).json({ errorMessage: "Please Login To Purchase" });
+        }
+
+        if (userDoc.purchase.includes(game.game_name)) {
+            return res.status(200).json({ message: "User has already purchased the game" });
+        }
+
+        // Add game to user's purchase history
+        userDoc.purchase.push(game.game_name);
+        await userDoc.save();
+
+        // Increment the quantity sold for the game
+        game.quantity_sold += 1;
+        await game.save();
+
+        // Create a new transaction
+        const newTransaction = new transcation({
+            buyer: userDoc.username,
+            seller: game.seller,
+            amount: game.price,
+            date: Date.now(),
+            game_name: game.game_name,
+        });
+
+        await newTransaction.save();
+
+        res.status(200).json({ message: "Successfully purchased the game" });
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ errorMessage: "Internal server error" });

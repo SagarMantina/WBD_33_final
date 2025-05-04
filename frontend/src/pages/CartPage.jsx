@@ -272,6 +272,7 @@ const CartPage = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'x-username': localStorage.getItem('username'), // send from localStorage
           },
           credentials: 'include',
         });
@@ -303,6 +304,7 @@ const CartPage = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+           'x-username': localStorage.getItem('username'), // send from localStorage
         },
         body: JSON.stringify({ cart_games: gameName }),
         credentials: 'include',
@@ -362,6 +364,7 @@ const CartPage = () => {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
+              'x-username': localStorage.getItem('username'), // send from localStorage
             },
             body: JSON.stringify({ cart_games: game.game_name }),
             credentials: 'include',

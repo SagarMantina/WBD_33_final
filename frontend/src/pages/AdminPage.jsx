@@ -15,15 +15,22 @@ const AdminPage = () => {
   
   const handleLogout = async () => {
     try {
+      const username = localStorage.getItem('username');
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${backendUrl}/signout`, {
         method: 'GET',
         credentials: 'include', 
+         headers: {
+      'Content-Type': 'application/json',
+      'x-username': localStorage.getItem('username') // send from localStorage
+       }, 
       });
 
-     
+      if(response.ok) {
+        localStorage.removeItem('username'); // Remove username from local storage
      
         window.location.href = ('/login');
+      }
      
     } catch (error) {
       console.error("Error during logout:", error);

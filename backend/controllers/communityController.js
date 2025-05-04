@@ -4,7 +4,7 @@ const user = require("../models/accountschema");
 
 async function joinCommunity(req, res) {
   try {
-      const username = req.cookies.username;
+    const username = req.headers['x-username'];
       const { communityName } = req.body;
    
       const userDoc = await user.findOne({ username });
@@ -27,7 +27,7 @@ async function joinCommunity(req, res) {
 
 async function createCommunity(req, res) {
   try {
-      const username = req.cookies.username;
+    const username = req.headers['x-username'];
    
       const exists_user = await user.findOne({ username: username });
        
@@ -57,7 +57,7 @@ async function createCommunity(req, res) {
 
 async function getUserCommunities(req, res) {
   try {
-      const username = req.cookies.username;
+    const username = req.headers['x-username'];
       const userDoc = await user.findOne({ username });
       if (!userDoc) return res.status(404).json({ error: "User not found." });
 
@@ -77,7 +77,7 @@ async function getCommunity(req, res) {
 
 async function getcommunityChat(req, res) {
   try {
-      const username = req.cookies.username;
+    const username = req.headers['x-username'];
       const communityName = req.params.community;
 
       // Check if the community exists
@@ -109,7 +109,7 @@ async function getcommunityChat(req, res) {
 }
 async function sendMessage(req, res) {
   try {
-      const username = req.cookies.username; // Get the username from cookies
+    const username = req.headers['x-username']; // Get the username from cookies
       const communityName = req.params.community; // Get the community name from request parameters
       const { message } = req.body; // Get the message from the request body
 

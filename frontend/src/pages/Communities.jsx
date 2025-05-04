@@ -42,6 +42,7 @@ export default function Communities() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            'x-username': localStorage.getItem('username')
           },
           credentials: "include",
         });
@@ -53,6 +54,7 @@ export default function Communities() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            'x-username': localStorage.getItem('username')
           },
           credentials: "include",
         });
@@ -71,6 +73,7 @@ export default function Communities() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'x-username': localStorage.getItem('username')
       },
       credentials: "include",
       body: JSON.stringify({ communityName }),
@@ -90,6 +93,7 @@ export default function Communities() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        'x-username': localStorage.getItem('username')
       },
       credentials: "include",
       body: JSON.stringify({

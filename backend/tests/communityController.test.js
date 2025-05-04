@@ -17,7 +17,7 @@ const {
   
     beforeEach(() => {
       req = {
-        cookies: {},
+        headers: {},
         body: {},
         params: {},
       };
@@ -30,7 +30,7 @@ const {
   
     describe('createCommunity', () => {
       it('should create a new community successfully', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.body = { community_name: 'testCommunity', description: 'Test Description' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
@@ -46,7 +46,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
   
         user.findOne.mockResolvedValue(null);
   
@@ -57,7 +57,7 @@ const {
       });
   
       it('should return 400 if community already exists', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.body = { community_name: 'testCommunity' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
@@ -72,7 +72,7 @@ const {
   
     describe('joinCommunity', () => {
       it('should join a community successfully', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.body = { communityName: 'testCommunity' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
@@ -85,7 +85,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
   
         user.findOne.mockResolvedValue(null);
   
@@ -96,7 +96,7 @@ const {
       });
   
       it('should return 404 if community not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.body = { communityName: 'testCommunity' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
@@ -109,7 +109,7 @@ const {
       });
   
       it('should return 400 if already a member', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.body = { communityName: 'testCommunity' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
@@ -135,7 +135,7 @@ const {
   
     describe('getUserCommunities', () => {
       it('should return user communities', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
   
         user.findOne.mockResolvedValue({ _id: 'userId' });
         community.find.mockResolvedValue([{ name: 'testCommunity' }]);
@@ -149,7 +149,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
   
         user.findOne.mockResolvedValue(null);
   
@@ -162,7 +162,7 @@ const {
   
     describe('getcommunityChat', () => {
       it('should return community chat successfully', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
     
         community.findOne.mockReturnValue({
@@ -184,7 +184,7 @@ const {
       });
     
       it('should return 404 if community not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
     
         community.findOne.mockReturnValue({
@@ -198,7 +198,7 @@ const {
       });
     
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
     
         community.findOne.mockReturnValue({
@@ -217,7 +217,7 @@ const {
   
     describe('sendMessage', () => {
       it('should send a message successfully', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
         req.body = { message: 'Hello' };
   
@@ -234,7 +234,7 @@ const {
       });
   
       it('should return 404 if community not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
   
         community.findOne.mockResolvedValue(null);
@@ -246,7 +246,7 @@ const {
       });
   
       it('should return 404 if user not found', async () => {
-        req.cookies.username = 'testuser';
+        req.headers = { 'x-username': 'testuser' };
         req.params.community = 'testCommunity';
   
         community.findOne.mockResolvedValue({ name: 'testCommunity' });

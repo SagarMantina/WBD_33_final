@@ -12,7 +12,8 @@ let arr = authController.arr;
 
 
 async function getuserdata(req,res){
-    const username = req.cookies.username;
+  const username = req.headers['x-username'];
+  console.log("userdata username",username);
     console.log("userdata username",username);
     try {
       const db_user = await user.findOne({ username });
@@ -24,8 +25,8 @@ async function getuserdata(req,res){
 
 
 async function signout(req,res){
-    let username = req.cookies.username;
-    res.clearCookie("username");
+    const { username } = req.body;
+    
     res.status(200).json({ successMsg: "User Logged Out" });
 
 }
@@ -72,16 +73,22 @@ async function signout(req,res){
 async function admindeletegame(req, res) {
   try {
     const gameName = req.body.game_name;
-    const deletedGame = await game_details.deleteOne({ name: gameName });
-    if (!deletedGame) {
+    console.log("Game name in admindeletegame: ", gameName);
+    
+    const result = await game_details.deleteOne({ game_name: gameName });
+    console.log("Delete result: ", result); // log for debugging
+
+    if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Game not found" });
     }
+
     res.status(200).json({ message: "Game deleted successfully" });
   } catch (error) {
     console.error("Error deleting game:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
 
 //this is post request for getting game data
 // async function getGame(req,res)
@@ -105,7 +112,7 @@ async function admindeletegame(req, res) {
 
 async function getaTransactions(req,res) { 
   try {
-    const username = req.cookies.username;
+    const username = req.headers['x-username'];
     const db_user = await user.findOne({ buyer : username });
     if(!db_user) {
       return res.status(404).json({ errorMessage: "Login to see Transactions" });
@@ -132,7 +139,7 @@ async function geteveryUser(req,res) {
 async function getuTransactions(req,res) {
 
   try {
-    const username = req.cookies.username;
+    const username = req.headers['x-username'];
     const db_user = await user.findOne({ buyer: username });
 
     if(!db_user) {
@@ -149,7 +156,7 @@ async function getuTransactions(req,res) {
 async function getsTransactions(req,res) {
 
   try {
-    const username = req.cookies.username;
+    const username = req.headers['x-username'];
     const db_user = await user.findOne({ seller : username });
 
     if(!db_user) {

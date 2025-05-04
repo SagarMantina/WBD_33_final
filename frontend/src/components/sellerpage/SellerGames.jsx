@@ -32,6 +32,7 @@ const UserGames = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username'), // Include username in headers
         },
         credentials: 'include',
       });
@@ -73,6 +74,7 @@ const UserGames = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username'), // Include username in headers
         },
         credentials: 'include',
         body: JSON.stringify(updateForm),
@@ -102,6 +104,10 @@ const UserGames = () => {
         const response = await fetch(`${backendUrl}/seller/delete_game/${gameId}`, {
           method: 'DELETE',
           credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-username': localStorage.getItem('username'), // Include username in headers
+          },
         });
 
         if (response.ok) {

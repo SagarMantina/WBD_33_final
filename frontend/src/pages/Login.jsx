@@ -10,7 +10,7 @@ import Header from './Header';
 import Footer from './Footer'
 
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = 'https://p2p-final-backend.onrender.com';
+const backendUrl = 'http://localhost:3000';
 const Login = () => {
   const [form, setForm] = useState({
     username: '',
@@ -52,14 +52,17 @@ const Login = () => {
         const errorData = await response.json();
         throw new Error(errorData.errorMessage || 'Login failed');
       }
-
-     
+      
+      const data = await response.json();
+      localStorage.setItem('username', data.username);
   
       toast.success('Login successful!');
 
       // Handle role-based redirection or state updates here
+
+      if(data.username){
        navigate('/dashboard');
-       
+      }
     } catch (error) {
       toast.error(error.message || 'Login failed. Please check your credentials.');
     }

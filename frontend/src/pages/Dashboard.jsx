@@ -13,6 +13,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Fetch user data (role) when the dashboard is loaded
+
+    const username = localStorage.getItem('username');
+
     const getUserData = async () => {
       try {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -21,8 +24,10 @@ const Dashboard = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              'x-username': localStorage.getItem('username'), // send from localStorage
             },
-            credentials: "include", // Include credentials for sending cookies
+            credentials: "include",
+           
           }
         ); // Replace with your API endpoint
         const data = await response.json();

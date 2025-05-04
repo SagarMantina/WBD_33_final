@@ -21,14 +21,14 @@ async function postlogin(req, res) {
     const isPass = await bcrypt.compare(password, exists.password);
 
     if (isPass) {
-      res.cookie("username", username, {
-        httpOnly: false,    // Allow access from the frontend
-        secure: false,      // Set true in production when using HTTPS
-        sameSite: "none",    // Or "strict" based on your use case
-      });
+      // res.cookie("username", username, {
+      //   httpOnly: false,    // Allow access from the frontend
+      //   secure: false,      // Set true in production when using HTTPS
+        
+      // });
   
-     
-      return res.json({ userrole: exists.role });
+      return res.status(200).json({ username: exists.username });
+      
     } else {
       // console.log("Incorrect password for username:-", username);
       return res.status(401).json({ errorMessage: "Incorrect password" });

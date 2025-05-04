@@ -32,6 +32,7 @@ const GameCard = ({ game_details}) => {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                'x-username': localStorage.getItem('username'), // Include username in headers
               },
               credentials: "include", // Include credentials for sending cookies
             }
@@ -58,13 +59,14 @@ const GameCard = ({ game_details}) => {
   const handleDelete = async (game_name) => {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      const response = await fetch(`${backend}/admin/deletegame`, {
+      const response = await fetch(`${backendUrl}/admin/delete_game`, {
         method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ game_name: game_name }),
         headers: {
           'Content-Type': 'application/json',
+          'x-username': localStorage.getItem('username')
         },
-        body: JSON.stringify({ game_name }),
-        credentials: 'include',
       });
   
       if (response.ok) {
@@ -87,6 +89,7 @@ const GameCard = ({ game_details}) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-username': localStorage.getItem('username'), // Include username in headers
             },
             body: JSON.stringify({ cart_games: { game_name } }), // Sending an object containing game_name
             credentials: 'include',

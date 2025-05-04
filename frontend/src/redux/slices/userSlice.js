@@ -17,6 +17,7 @@ export const fetchUserData = createAsyncThunk(
         credentials: "include", // Include cookies
         headers: {
           "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"), // Send username from localStorage
         },
       });
 

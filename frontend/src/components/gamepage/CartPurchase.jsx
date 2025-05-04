@@ -150,6 +150,7 @@ const CartPurchase = ({ game_name, game_price, setPopUp }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+           'x-username': localStorage.getItem('username')
         },
         body: JSON.stringify({ cart_games: { game_name } }),
         credentials: 'include',

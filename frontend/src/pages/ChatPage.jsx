@@ -28,7 +28,7 @@ const ChatPage = () => {
 
   const handleDirectMessage = async() => {
     if (!contactInput.trim() || !directMessage.trim()) return;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const backendUrl = process.env.BACKEND_URL ;
     const response = await fetch(`${backendUrl}/check/${contactInput}`, {
       method: "GET",
       headers: {
@@ -87,7 +87,7 @@ const ChatPage = () => {
 
     return () => newSocket.close();
   }, [currentUser]);
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = process.env.BACKEND_URL ;
   useEffect(() => {
     axios
       .get(`${backendUrl}/contacts`, { withCredentials: true })

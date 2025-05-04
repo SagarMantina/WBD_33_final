@@ -172,7 +172,6 @@
 // });
 
 
-
 const { addtocart, getcartgames, removetocart } = require('../controllers/cartController');
 const user = require('../models/accountschema');
 const game_details = require('../models/gameschema');
@@ -180,10 +179,9 @@ const game_details = require('../models/gameschema');
 jest.mock('../models/accountschema');
 jest.mock('../models/gameschema');
 
-describe('Cart Controller Unit Tests', () => {
+describe('Cart Controller Unit Tests (Header-based)', () => {
   let req, res;
 
-  // Mock console.error and console.log
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -195,7 +193,7 @@ describe('Cart Controller Unit Tests', () => {
 
   beforeEach(() => {
     req = {
-      cookies: {},
+      headers: {},
       body: {},
     };
     res = {
@@ -208,7 +206,7 @@ describe('Cart Controller Unit Tests', () => {
   // --- addtocart tests ---
   describe('addtocart', () => {
     it('should add game to user cart successfully', async () => {
-      req.cookies.username = 'testuser';
+      req.headers['x-username'] = 'testuser';
       req.body.cart_games = { game_name: 'testgame' };
 
       const saveMock = jest.fn();
@@ -219,45 +217,64 @@ describe('Cart Controller Unit Tests', () => {
       expect(user.findOne).toHaveBeenCalledWith({ username: 'testuser' });
       expect(saveMock).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({ successMsg: 'Successfully Added To Cart. Visit Cart To BUY' });
+      expect(res.json).toHaveBeenCalledWith({
+        successMsg: 'Successfully Added To Cart. Visit Cart To BUY',
+      });
     });
 
-    it('should return 400 if game name is not string', async () => {
-      req.cookies.username = 'testuser';
+    it('should return 400 if game name is not a string', async () => {
+      req.headers['x-username'] = 'testuser';
       req.body.cart_games = { game_name: 123 };
-
       user.findOne.mockResolvedValue({ cart: [], save: jest.fn() });
 
       await addtocart(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Invalid game name format' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Invalid game name format',
+      });
     });
 
-    it('should return 404 if user not logged in', async () => {
+    it('should return 401 if user not logged in', async () => {
+      await addtocart(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Login to get access to the cart',
+      });
+    });
+
+    it('should return 404 if user not found', async () => {
+      req.headers['x-username'] = 'testuser';
+      req.body.cart_games = { game_name: 'testgame' };
+      user.findOne.mockResolvedValue(null);
+
       await addtocart(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Login to get access to the cart' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'User Not Found',
+      });
     });
 
     it('should handle internal server error', async () => {
-      req.cookies.username = 'testuser';
+      req.headers['x-username'] = 'testuser';
       req.body.cart_games = { game_name: 'testgame' };
-
       user.findOne.mockRejectedValue(new Error('DB Error'));
 
       await addtocart(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Internal Server Error' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Internal Server Error',
+      });
     });
   });
 
   // --- getcartgames tests ---
   describe('getcartgames', () => {
     it('should return cart games successfully', async () => {
-      req.cookies.username = 'testuser';
+      req.headers['x-username'] = 'testuser';
 
       user.findOne.mockResolvedValue({ cart: ['game1', 'game2'] });
       game_details.findOne
@@ -268,11 +285,14 @@ describe('Cart Controller Unit Tests', () => {
 
       expect(user.findOne).toHaveBeenCalledWith({ username: 'testuser' });
       expect(game_details.findOne).toHaveBeenCalledTimes(2);
-      expect(res.json).toHaveBeenCalledWith([{ game_name: 'game1' }, { game_name: 'game2' }]);
+      expect(res.json).toHaveBeenCalledWith([
+        { game_name: 'game1' },
+        { game_name: 'game2' },
+      ]);
     });
 
-    it('should skip if some games are not found', async () => {
-      req.cookies.username = 'testuser';
+    it('should skip missing games in response', async () => {
+      req.headers['x-username'] = 'testuser';
 
       user.findOne.mockResolvedValue({ cart: ['game1', 'game2'] });
       game_details.findOne
@@ -288,25 +308,40 @@ describe('Cart Controller Unit Tests', () => {
       await getcartgames(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Login First To get Acess of the cart ' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Login First To Get Access To The Cart',
+      });
+    });
+
+    it('should return 404 if user not found', async () => {
+      req.headers['x-username'] = 'testuser';
+      user.findOne.mockResolvedValue(null);
+
+      await getcartgames(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'User Not Found',
+      });
     });
 
     it('should handle internal server error', async () => {
-      req.cookies.username = 'testuser';
-
+      req.headers['x-username'] = 'testuser';
       user.findOne.mockRejectedValue(new Error('DB Error'));
 
       await getcartgames(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Error processing data' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Error processing data',
+      });
     });
   });
 
   // --- removetocart tests ---
   describe('removetocart', () => {
-    it('should remove game from user cart successfully', async () => {
-      req.cookies.username = 'testuser';
+    it('should remove game from cart successfully', async () => {
+      req.headers['x-username'] = 'testuser';
       req.body.cart_games = 'testgame';
 
       game_details.findOne.mockResolvedValue({ game_name: 'testgame' });
@@ -319,39 +354,57 @@ describe('Cart Controller Unit Tests', () => {
         { username: 'testuser' },
         { $pull: { cart: 'testgame' } }
       );
-      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ successMsg: 'Removed From Cart' });
     });
 
-    it('should return 401 if game not found', async () => {
-      req.cookies.username = 'testuser';
-      req.body.cart_games = 'nonexistentgame';
-
+    it('should return 404 if game not found', async () => {
+      req.headers['x-username'] = 'testuser';
+      req.body.cart_games = 'missinggame';
       game_details.findOne.mockResolvedValue(null);
 
       await removetocart(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Game Not Found' });
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Game Not Found',
+      });
+    });
+
+    it('should return 404 if user not found during update', async () => {
+      req.headers['x-username'] = 'testuser';
+      req.body.cart_games = 'testgame';
+      game_details.findOne.mockResolvedValue({ game_name: 'testgame' });
+      user.findOneAndUpdate.mockResolvedValue(null);
+
+      await removetocart(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'User Not Found',
+      });
     });
 
     it('should return 401 if user not logged in', async () => {
       await removetocart(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Login First To get Acess of the cart ' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Login First To Get Access To The Cart',
+      });
     });
 
     it('should handle internal server error', async () => {
-      req.cookies.username = 'testuser';
+      req.headers['x-username'] = 'testuser';
       req.body.cart_games = 'testgame';
-
       game_details.findOne.mockRejectedValue(new Error('DB Error'));
 
       await removetocart(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ errorMessage: 'Internal Server Error' });
+      expect(res.json).toHaveBeenCalledWith({
+        errorMessage: 'Internal Server Error',
+      });
     });
   });
 });
