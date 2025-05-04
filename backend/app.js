@@ -19,10 +19,12 @@ const rfs = require("rotating-file-stream");
 require('dotenv').config();
 const csurf = require("csurf");
 
+
+
 // app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 const { errorHandler, notFoundHandler } = require("./middleware/errorhandlingRoute");
 const port = process.env.PORT || 3000;
-
+app.set('trust proxy', 1);
 const rateLimit = require("express-rate-limit");
 
 // const limiter = rateLimit({
@@ -57,9 +59,14 @@ user.on('index', (err) => {
 
 
 app.use(cors({
-  origin: ["http://localhost:5000", "https://solr-ii1s.onrender.com/solr/#/games_core/select","https://p2p-digital-games-marketplace.onrender.com"],
-  credentials: true,
+  origin: [
+    "http://localhost:5000",                     // Local frontend URL
+    "https://solr-ii1s.onrender.com/solr/#/games_core/select",  // External service URL
+    "https://p2p-digital-games-marketplace.onrender.com"         // Production frontend URL
+  ],
+  credentials: true,  // Ensures cookies are allowed to be sent with requests
 }));
+
 // app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
