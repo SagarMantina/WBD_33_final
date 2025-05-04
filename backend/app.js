@@ -57,9 +57,14 @@ user.on('index', (err) => {
 
 
 app.use(cors({
-  origin: ["http://localhost:5000", "https://solr-ii1s.onrender.com/solr/#/games_core/select","https://p2p-digital-games-marketplace.onrender.com"],
-  credentials: true,
+  origin: [
+    "http://localhost:5000",                     // Local frontend URL
+    "https://solr-ii1s.onrender.com/solr/#/games_core/select",  // External service URL
+    "https://p2p-digital-games-marketplace.onrender.com"         // Production frontend URL
+  ],
+  credentials: true,  // Ensures cookies are allowed to be sent with requests
 }));
+
 // app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
