@@ -5,7 +5,7 @@ const {
     getaTransactions, 
     getsTransactions, 
     getuTransactions, 
-    deletegame, 
+    admindeletegame, 
     geteveryUser 
   } = require('../controllers/dashboardController');
   
@@ -123,7 +123,7 @@ const {
         req.body.game_name = 'testgame';
         game_details.deleteOne.mockResolvedValue({ deletedCount: 1 });
     
-        await deletegame(req, res);
+        await admindeletegame(req, res);
     
         expect(game_details.deleteOne).toHaveBeenCalledWith({ name: 'testgame' });
         expect(res.json).toHaveBeenCalledWith({ message: "Game deleted successfully" });
@@ -133,7 +133,7 @@ const {
         req.body.game_name = 'testgame';
         game_details.deleteOne.mockResolvedValue(null);
     
-        await deletegame(req, res);
+        await admindeletegame(req, res);
     
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ error: "Game not found" });
@@ -144,7 +144,7 @@ const {
         req.body.game_name = 'testgame';
         game_details.deleteOne.mockRejectedValue(mockError);
       
-        await deletegame(req, res);
+        await admindeletegame(req, res);
       
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({ error: "Internal Server Error" });

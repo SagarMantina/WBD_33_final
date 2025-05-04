@@ -127,13 +127,12 @@ const updateGame = async (req, res) => {
 const sellerdeleteGame = async (req, res) => {
   try {
 
-    console.log("seller delet game")
+
     const gameId = req.params.gameId;
     const username = req.cookies.username;
 
     const game = await game_details.findOne({ _id: gameId, seller: username });
 
-    console.log(game.game_name)
     if (!game) {
       return res.status(404).json({ errorMessage: "Game not found!" });
     }

@@ -1,10 +1,11 @@
+// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = 'http://localhost:3000';
 const AdminDelete = ({ game_name, onDelete }) => {
 
   console.log("Game name in AdminDelete: ", game_name);
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this game?')) {
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${backendUrl}/admin/delete_game`, {
           method: 'POST',
           credentials: 'include',

@@ -6,7 +6,8 @@ import { FaEnvelope, FaUser, FaKey } from 'react-icons/fa';
 import styles from "../styles/Register.module.css";
 import Header from './Header';
 import Footer from './Footer';
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = 'http://localhost:3000';
 const Register = () => {
   const [formData, setFormData] = useState({
     email: '',

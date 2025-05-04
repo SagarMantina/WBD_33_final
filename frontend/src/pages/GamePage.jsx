@@ -16,7 +16,8 @@ import Footer from './Footer';
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
 const GamePage = () => {
   const [gameDetails, setGameDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ const GamePage = () => {
     
     const fetchGame = async () => {
       try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        // const backendUrl = import.meta.env.VITE_BACKEND_URL;
         const response = await fetch(`${backendUrl}/clickgame/${gamename}`);
         if (!response.ok) {
           throw new Error('Failed to fetch game data');

@@ -9,7 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer'
 
-
+// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = 'http://localhost:3000';
 const Login = () => {
   const [form, setForm] = useState({
     username: '',
@@ -35,7 +36,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${backendUrl}/login`, { // Ensure correct URL
         method: 'POST',
         headers: {
