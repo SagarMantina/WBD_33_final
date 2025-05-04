@@ -24,7 +24,7 @@ async function postlogin(req, res) {
     res.cookie("username", username, {
         httpOnly: false,    // Allow access from the frontend
         secure: false,      // Set true in production when using HTTPS
-        sameSite: false,
+        sameSite: "none",
       });
   
   
