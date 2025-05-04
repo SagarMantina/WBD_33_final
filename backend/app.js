@@ -24,7 +24,7 @@ const csurf = require("csurf");
 // app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 const { errorHandler, notFoundHandler } = require("./middleware/errorhandlingRoute");
 const port = process.env.PORT || 3000;
-
+app.set('trust proxy', 1);
 const rateLimit = require("express-rate-limit");
 
 // const limiter = rateLimit({
