@@ -4,7 +4,9 @@ import './Register2.css';
 import Header from './Header';
 import Footer from './Footer';
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { useNavigate } from 'react-router-dom';
 const Register2 = () => {
+    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     dateOfBirth: '',
     backupKey: '',
@@ -41,7 +43,7 @@ const Register2 = () => {
     if (!response.ok) {
       console.log("Error submitting form");
     } else {
-      window.location.href = "http://localhost:5000/login";
+      navigate('/login'); 
     }
   };
 
