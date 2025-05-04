@@ -25,7 +25,7 @@ async function postlogin(req, res) {
 httpOnly: true ,
 secure: true,
 sameSite: 'none',
-domain: 'p2p-digital-games-marketplace.onrender.com',
+domain: 'p2p-final-backend.onrender.com',
 }
 
   
