@@ -222,6 +222,10 @@ app.use(errorHandler);
 app.use(notFoundHandler);
 
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
