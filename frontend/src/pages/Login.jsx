@@ -41,8 +41,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',  
-        exposedHeaders: ["Set-Cookie"],// Ensure cookies are sent back
+        credentials: 'include',
         body: JSON.stringify({
           username: form.username,
           password: form.password,
