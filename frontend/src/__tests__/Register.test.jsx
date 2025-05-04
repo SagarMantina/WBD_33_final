@@ -267,7 +267,7 @@ describe('Register Component', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:3000/register',
+        'https://p2p-final-backend.onrender.com/register',
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -10,7 +10,7 @@ import Header from './Header';
 import Footer from './Footer'
 
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'https://p2p-final-backend.onrender.com';
 const Login = () => {
   const [form, setForm] = useState({
     username: '',
