@@ -21,13 +21,12 @@ async function postlogin(req, res) {
     const isPass = await bcrypt.compare(password, exists.password);
 
     if (isPass) {
-   const options = {
-httpOnly: true ,
-secure: true,
-sameSite: 'none',
-domain: 'p2p-final-backend.onrender.com',
-}
-
+    res.cookie("username", username, {
+        httpOnly: false,    // Allow access from the frontend
+        secure: false,      // Set true in production when using HTTPS
+        sameSite: false,
+      });
+  
   
      
       return res.json({ userrole: exists.role });
