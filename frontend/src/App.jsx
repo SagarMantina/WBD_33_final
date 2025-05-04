@@ -39,7 +39,7 @@ function App() {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'x-username': document.cookie.split('=')[1] || '', // Get the username from cookies
+            'x-username': localStorage.getItem('username'), // send from localStorage
           },
         });
         if (!response.ok) {

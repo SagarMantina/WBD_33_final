@@ -25,7 +25,7 @@ export default function Communities() {
   }
 
 
-  const currentUser = getCookie("username");
+  const currentUser = localStorage.getItem("username");
 
 
   if(!currentUser){

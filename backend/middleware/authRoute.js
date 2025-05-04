@@ -53,7 +53,9 @@ const authRoute = async (req, res, next) => {
     try {
       console.log("Custom Admin Route Middleware");
   
-      const user_name = req.headers['x-username']; // Use custom header
+      
+      const user_name = req.headers['x-username']; // custom header
+      console.log(user_name);
   
       if (!user_name) {
         return res.status(401).json({ message: "Login First" });

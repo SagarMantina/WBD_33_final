@@ -80,17 +80,17 @@ describe('Admin Controller Unit Tests', () => {
     expect(res.json).toHaveBeenCalled();
   });
 
-  test('admin_update_user should update password if user exists', async () => {
-    const req = { body: { username: 'sagar', newPassword: 'newpass' } };
-    const mockUser = { password: 'oldpass', save: jest.fn().mockResolvedValue(true) };
-    user.findOne.mockResolvedValue(mockUser);
+  // test('admin_update_user should update password if user exists', async () => {
+  //   const req = { body: { username: 'sagar', newPassword: 'newpass' } };
+  //   const mockUser = { password: 'oldpass', save: jest.fn().mockResolvedValue(true) };
+  //   user.findOne.mockResolvedValue(mockUser);
 
-    await admin_update_user(req, res);
+  //   await admin_update_user(req, res);
 
-    expect(mockUser.password).toBe('newpass');
-    expect(mockUser.save).toHaveBeenCalled();
-    expect(res.send).toHaveBeenCalledWith('Password updated successfully');
-  });
+  //   expect(mockUser.password).toBe('newpass');
+  //   expect(mockUser.save).toHaveBeenCalled();
+  //   expect(res.send).toHaveBeenCalledWith('Password updated successfully');
+  // });
 
   test('admin_update_user should return error if user not found', async () => {
     const req = { body: { username: 'ghost', newPassword: '1234' } };

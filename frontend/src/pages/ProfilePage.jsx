@@ -6,8 +6,10 @@ import './ProfilePage.css'
 import Header from './Header'
 import Footer from './Footer';
 import { useCartStore } from '../store/cartStore';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const ProfilePage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [usernav,setUserNav] = useState("AccountDetails");
   const {clearCart} = useCartStore();
 
@@ -21,11 +23,16 @@ const ProfilePage = () => {
           'Content-Type': 'application/json',
           'x-username': localStorage.getItem('username'), // send from localStorage
         },
-      });
+      }); 
 
-        clearCart(); // Clear the cart on logout
-        
-        window.location.href = ('/login');
+      if(response.ok) {
+        localStorage.removeItem('username'); // Remove username from local storage
+     
+         if(localStorage.getItem('username') === null) {
+          clearCart(); // Clear the cart on logout
+          navigate('/login'); // Redirect to login page 
+         }
+      }
      
     } catch (error) {
       console.error("Error during logout:", error);

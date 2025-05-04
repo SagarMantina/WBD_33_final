@@ -1,12 +1,14 @@
 import React from 'react'
 import './PaymentInfo.css'
 import CreditCardForm from './CreditCardForm'
+import { useNavigate } from 'react-router-dom'
 const PaymentInfo = ({selectedMethod, selectedCard, onMethodChange}) => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const handlePurchase = async () => {
     try {
       //rediredct to payment page
 
-      window.location.href = ('/purchase');
+      navigate('/purchase');
       
     } catch (error) {
       console.error("Error purchasing games:", error);

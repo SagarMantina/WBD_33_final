@@ -7,10 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faUser, faMoneyCheck, faGamepad, faUsers, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import Header from './Header'
 import Footer from './Footer';
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 
 const AdminPage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [nav, setNav] = useState("Dashboard");
   
   const handleLogout = async () => {
@@ -29,7 +30,10 @@ const AdminPage = () => {
       if(response.ok) {
         localStorage.removeItem('username'); // Remove username from local storage
      
-        window.location.href = ('/login');
+         if(localStorage.getItem('username') === null) {
+        
+          navigate('/login'); // Redirect to login page 
+         }
       }
      
     } catch (error) {

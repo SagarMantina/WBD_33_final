@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';  // Import toast CSS
 import { useParams } from 'react-router-dom';
 
 const Reviews = ({ reviews, curr_rating }) => {
-
+  const [userReview, setUserReview] = useState({ rating: 0, comment: "" });
     const { gamename } = useParams();
     const handleReview = async () => {
       setShowForm(true);

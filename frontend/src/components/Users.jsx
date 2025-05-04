@@ -51,7 +51,9 @@ const Users = () => {
     try {
       const response = await fetch(`${backendUrl}/admin/delete_user`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"),
+         },
         credentials: "include",
         body: JSON.stringify({ username: deleteUsername }),
       });

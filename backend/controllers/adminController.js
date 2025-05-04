@@ -132,7 +132,9 @@ async function admin_update_user(req, res) {
     if (!existing_user) {
       return res.status(404).send("User not found");
     }
-    existing_user.password = newPassword;
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    existing_user.password = hashedPassword;
     await existing_user.save();
     res.send("Password updated successfully");
   } catch (error) {
