@@ -88,7 +88,7 @@ app.use((req, res, next) => {
 app.use(router);
 
 // Connect to MongoDB and initialize game data
-connecttomongodb("mongodb://localhost:27017/p2p")
+connecttomongodb(`${process.env.MONGO_URI}`)
   .then(async () => {
     console.log("DB CONNECTED");
 
