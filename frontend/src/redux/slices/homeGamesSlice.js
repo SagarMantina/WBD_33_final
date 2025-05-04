@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import redis_client from '../../../../backend/redis_client';"../../../../backend/redis_client";
 // Initial state
 // const backendUrl = import.meta.env.VITE_BACKEND_URL ;
-const backendUrl = 'htttp://localhost:3000';
+const backendUrl = 'https://p2p-final-backend.onrender.com';
 const initialState = {
   highlightGames: [],
   featuredGames: [],

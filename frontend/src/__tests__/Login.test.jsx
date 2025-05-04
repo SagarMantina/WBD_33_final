@@ -121,7 +121,7 @@ describe('Login Component', () => {
     
     // Verify fetch was called with correct arguments
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000/login', {
+      expect(global.fetch).toHaveBeenCalledWith('https://p2p-final-backend.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

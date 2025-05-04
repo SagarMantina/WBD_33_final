@@ -146,7 +146,7 @@ describe('Register Component', () => {
       fireEvent.click(submitButton);
     });
 
-    expect(fetch).toHaveBeenCalledWith("http://localhost:3000/register", {
+    expect(fetch).toHaveBeenCalledWith("https://p2p-final-backend.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -17,7 +17,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = 'http://localhost:3000'; // Replace with your backend URL
+const backendUrl = 'https://p2p-final-backend.onrender.com'; // Replace with your backend URL
 const GamePage = () => {
   const [gameDetails, setGameDetails] = useState([]);
   const [loading, setLoading] = useState(true);
