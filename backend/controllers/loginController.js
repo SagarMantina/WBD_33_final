@@ -29,7 +29,7 @@ async function postlogin(req, res) {
   
   
      
-      return res.json({ userrole: exists.role });
+      return res.status(200).json({ userrole: exists.role });
     } else {
       // console.log("Incorrect password for username:-", username);
       return res.status(401).json({ errorMessage: "Incorrect password" });
