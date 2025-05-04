@@ -19,9 +19,7 @@ const rfs = require("rotating-file-stream");
 require('dotenv').config();
 const csurf = require("csurf");
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+
 
 // app.use(morgan(":method :url :status :res[content-length] - :response-time ms"));
 const { errorHandler, notFoundHandler } = require("./middleware/errorhandlingRoute");
