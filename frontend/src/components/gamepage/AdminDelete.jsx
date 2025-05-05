@@ -1,5 +1,5 @@
 // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'https://p2p-final-backend.onrender.com';
 const AdminDelete = ({ game_name, onDelete }) => {
 
   console.log("Game name in AdminDelete: ", game_name);
