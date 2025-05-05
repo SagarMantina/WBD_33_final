@@ -179,7 +179,7 @@ app.get("/messages/:recipient", async (req, res) => {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://p2p-final-backend.onrender.com", 
+    origin: "https://p2p-digital-games-marketplace.vercel.app", 
     methods: ["GET", "POST"],
     credentials: true,
   },
