@@ -134,7 +134,7 @@ function readDataFromJSONFile(filename) {
 // Express routes for contacts and messages
 app.get("/contacts", async (req, res) => {
   try {
-    const currentUser = header("x-username");
+    const username = req.headers['x-username'];
     if (!currentUser) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -157,7 +157,7 @@ app.get("/contacts", async (req, res) => {
 
 app.get("/messages/:recipient", async (req, res) => {
   try {
-    const currentUser = header("x-username");
+    const username = req.headers['x-username'];
     const recipient = req.params.recipient;
 
     const messages = await Message.find({
