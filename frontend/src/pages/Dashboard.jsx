@@ -44,7 +44,7 @@ const Dashboard = () => {
     getUserData();
   }, []);
 
-  if (loading) return <Loading />; ;
+  if (loading) return <LoadingScreen/>; ;
 
   // Render different components based on user role
   if (role === "admin") {
