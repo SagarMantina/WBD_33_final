@@ -5,7 +5,7 @@ import SellerPage from "./SellerPage";
 import ProfilePage from "./ProfilePage";
 import AdminPage from "./AdminPage";
 import Unauthorized from "./ErrorPage";
-import Loading from "../components/LoadingScreen";
+import { LoadingScreen } from '../components/LoadingScreen';
 const Dashboard = () => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
