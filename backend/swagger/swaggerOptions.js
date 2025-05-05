@@ -6,11 +6,12 @@ const options = {
     info: {
       title: 'P2P Digital Games Marketplace API',
       version: '1.0.0',
-      description: 'API documentation for your MERN digital games marketplace app',
+      description: 'REST API documentation for your MERN digital games marketplace app',
     },
     servers: [
       {
         url: 'http://localhost:3000/',
+        url: 'https://p2p-final-backend.onrender.com/'
       },
     ],
   },
