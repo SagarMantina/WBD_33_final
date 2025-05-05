@@ -7,6 +7,7 @@ import Header from './Header'
 import { FaRegCircleUser } from "react-icons/fa6";
 import { ToastContainer, toast } from 'react-toastify';
 import Footer from "./Footer";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const ChatPage = () => {
   const [contacts, setContacts] = useState([]);
   const [selectedContact, setSelectedContact] = useState(null);
@@ -17,22 +18,17 @@ const ChatPage = () => {
   const [directMessage, setDirectMessage] = useState("");
   const [isDirectMessage, setIsDirectMessage] = useState(false);
 
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  }
 
-  const currentUser = getCookie("username");
+  const currentUser = localStorage.getItem("username");
 
   const handleDirectMessage = async() => {
     if (!contactInput.trim() || !directMessage.trim()) return;
-    const backendUrl = process.env.BACKEND_URL ;
+    
     const response = await fetch(`${backendUrl}/check/${contactInput}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "x-username": localStorage.getItem("username"), // send from localStorage
       },
       credentials: "include",
     });
@@ -87,22 +83,48 @@ const ChatPage = () => {
 
     return () => newSocket.close();
   }, [currentUser]);
-  const backendUrl = process.env.BACKEND_URL ;
+  
   useEffect(() => {
-    axios
-      .get(`${backendUrl}/contacts`, { withCredentials: true })
-      .then((response) => setContacts(response.data))
+    fetch(`${backendUrl}/contacts`, {
+      method: "GET",
+      credentials: "include", 
+      headers: {
+        "Content-Type": "application/json",
+        "x-username": localStorage.getItem("username"),
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => setContacts(data))
       .catch((error) => console.error("Error fetching contacts:", error));
   }, []);
   
+  
   useEffect(() => {
     if (selectedContact) {
-      axios
-        .get(`${backendUrl}/messages/${selectedContact}`, { withCredentials: true })
-        .then((response) => setMessages(response.data))
+      fetch(`${backendUrl}/messages/${selectedContact}`, {
+        method: "GET",
+        credentials: "include", 
+        headers: {
+          "Content-Type": "application/json",
+          "x-username": localStorage.getItem("username"), // send from localStorage
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => setMessages(data))
         .catch((error) => console.error("Error fetching messages:", error));
     }
   }, [selectedContact]);
+  
 
   useEffect(() => {
     if (socket) {
