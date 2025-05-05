@@ -178,7 +178,7 @@ app.get("/messages/:recipient", async (req, res) => {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5000", 
+    origin: "https://p2p-final-backend.onrender.com", 
     methods: ["GET", "POST"],
     credentials: true,
   },
