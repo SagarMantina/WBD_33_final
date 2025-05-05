@@ -5,7 +5,7 @@ import SellerPage from "./SellerPage";
 import ProfilePage from "./ProfilePage";
 import AdminPage from "./AdminPage";
 import Unauthorized from "./ErrorPage";
-
+import Loading from "../components/LoadingScreen";
 const Dashboard = () => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ const Dashboard = () => {
     getUserData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />; ;
 
   // Render different components based on user role
   if (role === "admin") {
