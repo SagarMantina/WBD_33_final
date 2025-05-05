@@ -62,7 +62,8 @@ app.use(cors({
   origin: [
     "http://localhost:5000",                     // Local frontend URL
     "https://solr-ii1s.onrender.com/solr/#/games_core/select",  // External service URL
-    "https://p2p-digital-games-marketplace.onrender.com"         // Production frontend URL
+    "https://p2p-digital-games-marketplace.onrender.com"   
+    "https://p2p-digital-games-marketplace.vercel.app"// Production frontend URL
   ],
   credentials: true,  // Ensures cookies are allowed to be sent with requests
 }));
