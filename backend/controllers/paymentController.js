@@ -57,7 +57,35 @@ async function cartpaygame(req, res) {
             // Increment the quantity sold for the game
             gamename.quantity_sold += 1;
             gamename.broughtBy.push(username);
-          
+            
+            // add earnings to the seller
+            if(gamename.seller!="P2P") {
+                const seller = await user.findOne({ username: gamename.seller });
+                if (seller) {
+                    seller.earnings += gamename.price * 0.9; // Assuming 10% commission for the platform
+                    const admin_user = await user.findOne({ role: "admin" });
+                    if (admin_user) {
+                        admin_user.earnings += gamename.price * 0.1; // Assuming 10% commission for the platform
+                        await admin_user.save();
+                    } else {
+                        console.error(`Admin user not found`);
+                    }
+                    // Save the updated seller earnings
+                    await seller.save();
+                } else {
+                    console.error(`Seller ${gamename.seller} not found`);
+                }
+            }
+
+            else{
+                const admin_user = await user.findOne({ role: "admin" });
+                if (admin_user) {
+                    admin_user.earnings += gamename.price; 
+                    await admin_user.save();
+                } else {
+                    console.error(`Admin user not found`);
+                }
+            }
             await gamename.save();
 
             // Create a new transaction
