@@ -228,6 +228,44 @@ async function admin_delete_community_message(req, res) {
     res.status(500).send("Error deleting message");
   }
 }
+
+
+async function adminRevenueDetailed(req, res) {
+  try {
+    const adminUsers = await user.find({ role: "admin" });
+    const revenue = adminUsers.reduce((sum, admin) => sum + (admin.earnings || 0), 0);
+
+    const topSellers = await user.find({ role: "Seller" })
+      .sort({ createdAt: 1 })
+      .limit(5)
+      .select("username createdAt");
+
+    const topRevenueSellers = await user.find({ role: "Seller" })
+      .sort({ earnings: -1 })
+      .limit(5)
+      .select("username earnings");
+
+    const topRevenueSellersData = topRevenueSellers.map(seller => ({
+      username: seller.username,
+      earnings: seller.earnings/90, // Assuming 10% commission for the platform
+    }));
+
+    const topSellersData = topSellers.map(seller => ({
+      username: seller.username,
+      createdAt: seller.createdAt,
+    }));
+
+    res.status(200).json({
+      revenue,
+      topSellers: topSellersData,
+      topRevenueSellers: topRevenueSellersData,
+    });
+  } catch (error) {
+    console.error("Error in adminRevenueDetailed:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
 module.exports = {
   getadmindata,
   getTransactions,
@@ -238,4 +276,5 @@ module.exports = {
   admin_delete_user,
   admin_delete_community,
   admin_delete_community_message,
+  adminRevenueDetailed,
 };
