@@ -1459,7 +1459,7 @@ router.get("/sellerdata", getSellerdata);
  *     description: Allows a seller to add a new game to the database. The seller is identified by their username
  *     tags: 
  *       - Seller
- *       - B2C
+ *       - B2B
  *     requestBody:
  *       required: true
  *       content:
