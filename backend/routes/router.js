@@ -1562,7 +1562,7 @@ router.post("/sellgame", sellGame);
  *     description: Fetches all games added by the logged-in seller. The seller is identified by their username
  *     tags: 
  *       - Seller
- *       - B2C
+ *       - B2B
  *     parameters:
  *       - in: header
  *         name: x-username
@@ -1628,7 +1628,7 @@ router.get("/seller/mygames", getsellerMyGames);
  *     description: Fetches all transactions associated with the logged-in seller. The seller is identified by their username
  *     tags: 
  *       - Seller
- *       - B2C
+ *       - B2B
  *     parameters:
  *       - in: header
  *         name: x-username
@@ -2702,7 +2702,7 @@ router.delete("/removetocart", authRoute, removetocart);
  *     description: Allows a seller to delete a specific game they own.
  *     tags: 
  *       - Seller
- *       - B2C
+ *       - B2B
  *     parameters:
  *       - in: path
  *         name: gameId
@@ -2757,7 +2757,7 @@ router.delete("/seller/delete_game/:gameId", sellerdeleteGame);
  *     description: Allows a seller to update the details of a specific game they own.
  *     tags: 
  *       - Seller
- *       - B2C
+ *       - B2B
  *     parameters:
  *       - in: path
  *         name: gameId
