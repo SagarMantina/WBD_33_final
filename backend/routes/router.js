@@ -61,6 +61,12 @@ const { admin_update_user, admin_create_user, admin_delete_user, admin_delete_co
 const { getRole } = require("../controllers/redisController");
 
 
+
+const  {adminRevenueDetailed} = require("../controllers/adminController.js");
+
+router.get("/admin/revenue", adminRoute, adminRevenueDetailed);
+
+
 router.delete("/admin/delete_user", adminRoute, admin_delete_user);
 router.delete("/admin/delete_community", adminRoute, admin_delete_community);
 router.delete("/admin/delete_community_message", adminRoute, admin_delete_community_message);
