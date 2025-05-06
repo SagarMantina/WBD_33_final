@@ -52,6 +52,10 @@ const Footer = () => {
         <li>
           <a href="#">Contents</a>
         </li>
+        <li>
+          <a href=" https://p2p-final-backend.onrender.com/api-docs">API-DOCS</a>
+        </li>
+       
       </ul>
       <p className="copyright">
         © 2024   P2P.Some Rights Reserved
