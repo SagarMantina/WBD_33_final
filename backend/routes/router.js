@@ -12,19 +12,19 @@ router.use(express.static(path.join(__dirname, "public")));
 const { sellerdeleteGame, updateGame } = require("../controllers/sellerController");
 const { adminRoute } = require("../middleware/authRoute");
 
-const { getSellerdata ,  sellGame, getsellerMyGames,getsellerTransactions} = require("../controllers/sellerController");
-const {createCommunity,
+const { getSellerdata, sellGame, getsellerMyGames, getsellerTransactions } = require("../controllers/sellerController");
+const { createCommunity,
   joinCommunity,
   getCommunity,
   getcommunityChat,
   sendMessage,
-  getUserCommunities,} = require("../controllers/communityController");
+  getUserCommunities, } = require("../controllers/communityController");
 const {
   getuserdata,
   signout,
 
 } = require("../controllers/dashboardController");
-const {  updateuserdetails,getuserTransactions,getuserMyGames, checkUser } = require("../controllers/userController");
+const { updateuserdetails, getuserTransactions, getuserMyGames, checkUser } = require("../controllers/userController");
 const { postlogin } = require("../controllers/loginController");
 const { postregister } = require("../controllers/registerController");
 const { postregister2 } = require("../controllers/register2Controller");
@@ -43,22 +43,22 @@ const {
   getclickgame,
 } = require("../controllers/gamepageController");
 
-const { paygame, cartpaygame} = require("../controllers/paymentController");
-const { getTopSellingGames , getTopRevenueGames} = require("../controllers/paymentController");
+const { paygame, cartpaygame } = require("../controllers/paymentController");
+const { getTopSellingGames, getTopRevenueGames } = require("../controllers/paymentController");
 
-const  {geteveryUser} = require("../controllers/dashboardController");
+const { geteveryUser } = require("../controllers/dashboardController");
 
 const { getadmindata } = require("../controllers/adminController");
-const { homeGames , getcategories, searchgames } = require("../controllers/homeController");
-const {getGames } = require("../controllers/adminController");
-const {  getaTransactions} = require("../controllers/dashboardController");
+const { homeGames, getcategories, searchgames } = require("../controllers/homeController");
+const { getGames } = require("../controllers/adminController");
+const { getaTransactions } = require("../controllers/dashboardController");
 
-const {admindeletegame} = require("../controllers/dashboardController"); 
+const { admindeletegame } = require("../controllers/dashboardController");
 
 
-const {authRoute} = require("../middleware/authRoute");
-const {admin_update_user, admin_create_user, admin_delete_user,admin_delete_community_message,admin_delete_community} = require("../controllers/adminController");
-const  {getRole} = require("../controllers/redisController");
+const { authRoute } = require("../middleware/authRoute");
+const { admin_update_user, admin_create_user, admin_delete_user, admin_delete_community_message, admin_delete_community } = require("../controllers/adminController");
+const { getRole } = require("../controllers/redisController");
 
 
 router.delete("/admin/delete_user", adminRoute, admin_delete_user);
@@ -80,6 +80,13 @@ router.get("/admin/all_users", adminRoute, geteveryUser);
  *     tags: 
  *       - User
  *       - Seller
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -155,6 +162,13 @@ router.post("/admin/delete_game", admindeletegame);
  *     description: Allows a seller to create a new game and save it to the database.
  *     tags: 
  *       - Seller
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -235,8 +249,10 @@ router.post("/admin/delete_game", admindeletegame);
  *                   type: string
  *                   example: Detailed error message.
  */
+
 router.post("/sell/games", async (req, res) => {
   try {
+    const username = req.headers['x-username'];
     const {
       gameName,
       description,
@@ -249,7 +265,7 @@ router.post("/sell/games", async (req, res) => {
       gamePrice,
       about,
     } = req.body;
-    const username = req.cookies.username;
+   
     console.log(username);
     const newGame = new game_details({
       game_name: gameName,
@@ -273,13 +289,12 @@ router.post("/sell/games", async (req, res) => {
 });
 
 
-
 // const adminRoute = async (req, res, next) => {
 //   try {
-     
+
 
 //       const user_name = req.cookies.username;
-      
+
 
 //       if (!user_name) {
 //           return res.status(401).json({ message: "Login First" });
@@ -299,7 +314,7 @@ router.post("/sell/games", async (req, res) => {
 
 // router.put("/admin/update_user", adminRoute,  async (req, res) => {
 //   try {
-    
+
 //     const { username, newPassword } = req.body;
 //     const existing_user = await user.findOne({ username });
 //     if (!existing_user) {
@@ -316,7 +331,7 @@ router.post("/sell/games", async (req, res) => {
 
 // router.post("/admin/create_user", adminRoute, async (req, res) => {
 //   try {
-   
+
 //     const { username, email, password } = req.body;
 //     const newUser = new user({ username, email, password, role: "user" });
 //     await newUser.save();
@@ -435,9 +450,16 @@ router.post("/admin/create_user", adminRoute, admin_create_user);
  * /user/role:
  *   get:
  *     summary: Get the role of the logged-in user
- *     description: Fetches the role of the user based on the username stored in cookies. The role is cached in Redis for faster subsequent requests.
+ *     description: Fetches the role of the user based on the username The role is cached in Redis for faster subsequent requests.
  *     tags: 
  *       - User
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Role fetched successfully.
@@ -481,7 +503,7 @@ router.post("/admin/create_user", adminRoute, admin_create_user);
  *                   type: string
  *                   example: Internal server error
  */
-router.get("/user/role" , authRoute, getRole);
+router.get("/user/role", authRoute, getRole);
 
 //handle the default route for all
 // router.get("/", getdashboard);
@@ -500,6 +522,13 @@ router.get("/user/role" , authRoute, getRole);
  *     description: Fetches data for the admin dashboard, including total games, total users, total purchases, today's sales, and sales increase compared to yesterday.
  *     tags: 
  *       - Admin
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Admin data fetched successfully.
@@ -539,7 +568,7 @@ router.get("/user/role" , authRoute, getRole);
  *                   type: string
  *                   example: Internal Server Error
  */
-router.get("/admin_data",  getadmindata);
+router.get("/admin_data",adminRoute, getadmindata);
 
 
 /**
@@ -593,7 +622,7 @@ router.get("/admin_data",  getadmindata);
  *                   type: string
  *                   example: Internal server error
  */
-router.get("/api/top-selling",getTopSellingGames );
+router.get("/api/top-selling", getTopSellingGames);
 
 
 /**
@@ -647,7 +676,7 @@ router.get("/api/top-selling",getTopSellingGames );
  *                   type: string
  *                   example: Internal server error
  */
-router.get("/api/top-revenue",getTopRevenueGames)
+router.get("/api/top-revenue", getTopRevenueGames)
 
 //admin, seller and user routes
 
@@ -828,7 +857,7 @@ router.post("/register2", postregister2);
 
 
 
-router.get("/signout",authRoute, signout);
+router.get("/signout", authRoute, signout);
 // end of user routes
 
 
@@ -837,9 +866,16 @@ router.get("/signout",authRoute, signout);
  * /user/communities:
  *   get:
  *     summary: Get user's communities
- *     description: Fetches all communities associated with the logged-in user based on their username stored in cookies.
+ *     description: Fetches all communities associated with the logged-in user based on their username
  *     tags: 
  *       - User
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: User's communities fetched successfully.
@@ -890,9 +926,17 @@ router.get("/user/communities", getUserCommunities);
  * /createcommunity:
  *   post:
  *     summary: Create a new community
- *     description: Allows a user to create a new community. The community is associated with the logged-in user based on their username stored in cookies.
+ *     description: Allows a user to create a new community. The community is associated with the logged-in user based on their username
  *     tags: 
  *       - Community
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -955,9 +999,17 @@ router.post("/createcommunity", createCommunity);
  * /joincommunity:
  *   post:
  *     summary: Join a community
- *     description: Allows a user to join an existing community. The community is associated with the logged-in user based on their username stored in cookies.
+ *     description: Allows a user to join an existing community. The community is associated with the logged-in user based on their username
  *     tags: 
  *       - Community
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -1022,6 +1074,7 @@ router.post("/joincommunity", joinCommunity);
  *     description: Fetches a list of all communities available in the database.
  *     tags: 
  *       - Community
+ *       - B2C
  *     responses:
  *       200:
  *         description: List of communities fetched successfully.
@@ -1062,9 +1115,10 @@ router.get("/community", getCommunity);
  * /community/{community}:
  *   get:
  *     summary: Get community chat
- *     description: Fetches the chat messages of a specific community along with user information based on the logged-in user's username stored in cookies.
+ *     description: Fetches the chat messages of a specific community along with user information based on the logged-in user's username
  *     tags: 
  *       - Community
+ *       - B2C
  *     parameters:
  *       - in: path
  *         name: community
@@ -1073,6 +1127,12 @@ router.get("/community", getCommunity);
  *           type: string
  *         description: The name of the community to fetch chat messages for.
  *         example: "Gaming Enthusiasts"
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Community chat fetched successfully.
@@ -1134,9 +1194,10 @@ router.get("/community/:community", getcommunityChat);
  * /community/{community}:
  *   post:
  *     summary: Send a message to a community
- *     description: Allows a user to send a message to a specific community. The community is identified by its name, and the user is identified by their username stored in cookies.
+ *     description: Allows a user to send a message to a specific community. The community is identified by its name, and the user is identified by their username
  *     tags: 
  *       - Community
+ *       - B2C
  *     parameters:
  *       - in: path
  *         name: community
@@ -1145,6 +1206,12 @@ router.get("/community/:community", getcommunityChat);
  *           type: string
  *         description: The name of the community to send the message to.
  *         example: "Gaming Enthusiasts"
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -1222,6 +1289,13 @@ router.post("/community/:community", sendMessage);
  *     description: Fetches the total number of users, total visits, and the count of users created in the last 7 days.
  *     tags: 
  *       - Admin
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Users data fetched successfully.
@@ -1244,6 +1318,10 @@ router.post("/community/:community", sendMessage);
  *                     type: integer
  *                   description: Array containing the count of users created in the last 7 days (index 0 is today).
  *                   example: [10, 15, 20, 5, 8, 12, 7]
+ *       401:
+ *         description: Login required or user not found.
+ *       403:
+ *         description: Forbidden – Admins only.
  *       500:
  *         description: Internal server error.
  *         content:
@@ -1255,6 +1333,7 @@ router.post("/community/:community", sendMessage);
  *                   type: string
  *                   example: Internal Server Error!
  */
+
 router.get("/allusers", adminRoute, getallUsers);
 
 
@@ -1317,9 +1396,17 @@ router.get("/allgames", getGames);
  * /sellerdata:
  *   get:
  *     summary: Get seller data
- *     description: Fetches the details of the logged-in seller based on the username stored in cookies.
+ *     description: Fetches the details of the logged-in seller based on the username
  *     tags: 
  *       - Seller
+ *       - B2B
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Seller data fetched successfully.
@@ -1369,9 +1456,10 @@ router.get("/sellerdata", getSellerdata);
  * /sellgame:
  *   post:
  *     summary: Add a new game for sale
- *     description: Allows a seller to add a new game to the database. The seller is identified by their username stored in cookies.
+ *     description: Allows a seller to add a new game to the database. The seller is identified by their username
  *     tags: 
  *       - Seller
+ *       - B2C
  *     requestBody:
  *       required: true
  *       content:
@@ -1471,9 +1559,17 @@ router.post("/sellgame", sellGame);
  * /seller/mygames:
  *   get:
  *     summary: Get seller's games
- *     description: Fetches all games added by the logged-in seller. The seller is identified by their username stored in cookies.
+ *     description: Fetches all games added by the logged-in seller. The seller is identified by their username
  *     tags: 
  *       - Seller
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Seller's games fetched successfully.
@@ -1529,9 +1625,17 @@ router.get("/seller/mygames", getsellerMyGames);
  * /seller/transactions:
  *   get:
  *     summary: Get seller's transactions
- *     description: Fetches all transactions associated with the logged-in seller. The seller is identified by their username stored in cookies.
+ *     description: Fetches all transactions associated with the logged-in seller. The seller is identified by their username
  *     tags: 
  *       - Seller
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Seller's transactions fetched successfully.
@@ -1582,9 +1686,16 @@ router.get("/seller/transactions", getsellerTransactions);
  * /user/transactions:
  *   get:
  *     summary: Get user's transactions
- *     description: Fetches all transactions associated with the logged-in user. The user is identified by their username stored in cookies.
+ *     description: Fetches all transactions associated with the logged-in user. The user is identified by their username
  *     tags: 
  *       - User
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: User's transactions fetched successfully.
@@ -1634,9 +1745,16 @@ router.get("/user/transactions", getuserTransactions);
  * /user/mygames:
  *   get:
  *     summary: Get user's purchased games
- *     description: Fetches all games purchased by the logged-in user. The user is identified by their username stored in cookies.
+ *     description: Fetches all games purchased by the logged-in user. The user is identified by their username
  *     tags: 
  *       - User
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: User's purchased games fetched successfully.
@@ -1694,6 +1812,13 @@ router.get("/user/mygames", getuserMyGames);
  *     description: Fetches all transactions from the database. Accessible only to admins.
  *     tags: 
  *       - Admin
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Transactions fetched successfully.
@@ -1750,7 +1875,7 @@ router.get("/user/mygames", getuserMyGames);
  *                   type: string
  *                   example: Internal server error
  */
-router.get("/admin/transactions",adminRoute, getaTransactions);
+router.get("/admin/transactions", adminRoute, getaTransactions);
 
 
 
@@ -1763,9 +1888,16 @@ router.get("/admin/transactions",adminRoute, getaTransactions);
  * /userdata:
  *   get:
  *     summary: Get user data
- *     description: Fetches the details of the logged-in user based on the username stored in cookies.
+ *     description: Fetches the details of the logged-in user based on the username
  *     tags: 
  *       - User
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: User data fetched successfully.
@@ -2027,6 +2159,7 @@ router.get("/comparisons/:gamename", getComparisons);
  *     description: Searches for games based on the provided search term. The search is performed on game names and categories.
  *     tags: 
  *       - Games
+ *       - B2C 
  *     parameters:
  *       - in: query
  *         name: term
@@ -2142,6 +2275,14 @@ router.get("/categories", getcategories);
  *     description: Allows a user to purchase a game. Updates the user's purchase history, increments the game's quantity sold, and creates a new transaction.
  *     tags: 
  *       - Payment
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -2198,6 +2339,14 @@ router.post("/paygame", paygame);
  *     description: Processes the purchase of all games in the user's cart. Updates the user's purchase history, increments the quantity sold for each game, and creates transactions for each purchase.
  *     tags: 
  *       - Payment
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Games purchased successfully.
@@ -2243,7 +2392,7 @@ router.post("/paygame", paygame);
 router.get("/cartpaygame", cartpaygame);
 
 
-router.get("/check/:username",checkUser);
+router.get("/check/:username", checkUser);
 
 
 //post for an review of the game page usually we do it using params
@@ -2258,6 +2407,7 @@ router.get("/check/:username",checkUser);
  *     description: Allows a logged-in user to post a review and rating for a specific game. Updates the game's overall rating and adds the review to the game's review list.
  *     tags: 
  *       - Reviews
+ *       - B2C
  *     parameters:
  *       - in: path
  *         name: gamename
@@ -2266,6 +2416,12 @@ router.get("/check/:username",checkUser);
  *           type: string
  *         description: The name of the game to post a review for.
  *         example: "Adventure Quest"
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -2339,6 +2495,14 @@ router.post("/postreview/:gamename", authRoute, postreview);
  *     description: Allows a logged-in user to add a game to their cart.
  *     tags: 
  *       - Cart
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -2395,7 +2559,7 @@ router.post("/postreview/:gamename", authRoute, postreview);
  *                   type: string
  *                   example: "Internal Server Error"
  */
-router.post("/addtocart",authRoute, addtocart);
+router.post("/addtocart", authRoute, addtocart);
 
 
 /**
@@ -2406,6 +2570,14 @@ router.post("/addtocart",authRoute, addtocart);
  *     description: Fetches all games currently in the logged-in user's cart.
  *     tags: 
  *       - Cart
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Games in the cart fetched successfully.
@@ -2453,7 +2625,7 @@ router.post("/addtocart",authRoute, addtocart);
  *                   type: string
  *                   example: "Error processing data"
  */
-router.get("/getcartgames",authRoute, getcartgames);
+router.get("/getcartgames", authRoute, getcartgames);
 
 
 /**
@@ -2464,6 +2636,14 @@ router.get("/getcartgames",authRoute, getcartgames);
  *     description: Allows a logged-in user to remove a game from their cart.
  *     tags: 
  *       - Cart
+ *       - B2C
+ *     parameters:
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
@@ -2507,7 +2687,7 @@ router.get("/getcartgames",authRoute, getcartgames);
  *                   type: string
  *                   example: "Internal Server Error"
  */
-router.delete("/removetocart",authRoute, removetocart);
+router.delete("/removetocart", authRoute, removetocart);
 //end of cart routes
 
 
@@ -2522,6 +2702,7 @@ router.delete("/removetocart",authRoute, removetocart);
  *     description: Allows a seller to delete a specific game they own.
  *     tags: 
  *       - Seller
+ *       - B2C
  *     parameters:
  *       - in: path
  *         name: gameId
@@ -2530,6 +2711,12 @@ router.delete("/removetocart",authRoute, removetocart);
  *           type: string
  *         description: The ID of the game to delete.
  *         example: "645a1b2c3d4e5f6789012345"
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     responses:
  *       200:
  *         description: Game deleted successfully.
@@ -2570,6 +2757,7 @@ router.delete("/seller/delete_game/:gameId", sellerdeleteGame);
  *     description: Allows a seller to update the details of a specific game they own.
  *     tags: 
  *       - Seller
+ *       - B2C
  *     parameters:
  *       - in: path
  *         name: gameId
@@ -2578,6 +2766,12 @@ router.delete("/seller/delete_game/:gameId", sellerdeleteGame);
  *           type: string
  *         description: The ID of the game to update.
  *         example: "645a1b2c3d4e5f6789012345"
+ *       - in: header
+ *         name: x-username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Username of the admin making the request.
  *     requestBody:
  *       required: true
  *       content:
