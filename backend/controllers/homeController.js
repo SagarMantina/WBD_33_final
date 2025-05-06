@@ -463,7 +463,45 @@ const SOLR_URL = "https://solr-ii1s.onrender.com/solr/games_core/select";
 //   }
 // }
 
+// async function searchgames(req, res) {
+//   try {
+//     const term = (req.query.term || "").trim();
+//     const solrQuery = `${SOLR_URL}?q=game_name:${term}* OR category:${term}*&wt=json`;
+//     let games = [];
 
+//     if (await isSolrAllowed()) {
+//       if (await checkSolrReady()) {
+//         try {
+//           console.log("using solr")
+//           const solrRes = await axios.get(solrQuery);
+//           games = solrRes.data.response.docs;
+//         } catch (solrQueryErr) {
+//           console.log("Solr query failed, fallback to Mongo:", solrQueryErr.message);
+//           solrDownUntil = Date.now() + SOLR_COOLDOWN_MS; // only on query fail
+//         }
+//       } else {
+//         solrDownUntil = Date.now() + SOLR_COOLDOWN_MS; // on health check fail
+//       }
+//     }
+
+//     if (games.length === 0) {
+      
+//       console.log("Using MongoDB fallback for search");
+//       const regex = new RegExp("^" + term, "i");
+//       games = await game_details.find({
+//         $or: [
+//           { game_name: regex },
+//           { category: regex }
+//         ]
+//       }).limit(5);
+//     }
+
+//     res.json(games);
+//   } catch (err) {
+//     console.error("Search Error:", err.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// }
 let solrDownUntil = 0;
 const SOLR_COOLDOWN_MS = 5000;
 
@@ -475,51 +513,74 @@ async function checkSolrReady() {
   const healthUrl = `${SOLR_URL}?q=*:*&rows=1&wt=json`;
   try {
     const response = await axios.get(healthUrl);
-    if (response.data?.response?.docs?.length > 0) {
-      return true;
-    }
-  } catch (err) {}
-  return false;
+    return response.data?.response?.docs?.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 async function searchgames(req, res) {
   try {
     const term = (req.query.term || "").trim();
     const solrQuery = `${SOLR_URL}?q=game_name:${term}* OR category:${term}*&wt=json`;
-    let games = [];
+    const regex = new RegExp("^" + term, "i");
+
+    let solrPromise = Promise.resolve([]);
+    let mongoPromise = Promise.resolve([]);
+    let solrUsed = false;
 
     if (await isSolrAllowed()) {
-      if (await checkSolrReady()) {
-        try {
-          console.log("using solr")
-          const solrRes = await axios.get(solrQuery);
-          games = solrRes.data.response.docs;
-        } catch (solrQueryErr) {
-          console.log("Solr query failed, fallback to Mongo:", solrQueryErr.message);
-          solrDownUntil = Date.now() + SOLR_COOLDOWN_MS; // only on query fail
-        }
+      const solrReady = await checkSolrReady();
+      if (solrReady) {
+        solrUsed = true;
+        solrPromise = axios.get(solrQuery).then(res => res.data.response.docs || []).catch(err => {
+          console.log("Solr query failed, fallback to Mongo:", err.message);
+          solrDownUntil = Date.now() + SOLR_COOLDOWN_MS;
+          solrUsed = false; 
+          solrUsed = false; 
+          return [];
+        });
       } else {
-        solrDownUntil = Date.now() + SOLR_COOLDOWN_MS; // on health check fail
+        solrDownUntil = Date.now() + SOLR_COOLDOWN_MS;
       }
     }
 
-    if (games.length === 0) {
-      
-      console.log("Using MongoDB fallback for search");
-      const regex = new RegExp("^" + term, "i");
-      games = await game_details.find({
-        $or: [
-          { game_name: regex },
-          { category: regex }
-        ]
-      }).limit(5);
+    // Always run MongoDB query
+    mongoPromise = game_details.find({
+      $or: [
+        { game_name: regex },
+        { category: regex }
+      ]
+    }).limit(10);
+
+    // Run both in parallel
+    const [solrResult, mongoResult] = await Promise.allSettled([solrPromise, mongoPromise]);
+
+    const solrGames = solrResult.status === "fulfilled" ? solrResult.value : [];
+    const mongoGames = mongoResult.status === "fulfilled" ? mongoResult.value : [];
+
+    // Merge and deduplicate
+    const combined = [...solrGames, ...mongoGames];
+    const uniqueGamesMap = new Map();
+    for (const game of combined) {
+      const id = game._id?.toString() || game.game_id || game.id || JSON.stringify(game);
+      if (!uniqueGamesMap.has(id)) {
+        uniqueGamesMap.set(id, game);
+      }
     }
 
-    res.json(games);
+    const mergedResults = Array.from(uniqueGamesMap.values()).slice(0, 7);
+
+    // Log Solr usage
+    console.log(`Solr Used: ${solrUsed} | Results - Solr: ${solrGames.length}, Mongo: ${mongoGames.length}, Final: ${mergedResults.length}`);
+
+    res.json(mergedResults);
   } catch (err) {
     console.error("Search Error:", err.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+
 
 module.exports  = { homeGames , getGame , getcategories , searchgames };
