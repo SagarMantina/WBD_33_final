@@ -35,7 +35,16 @@ function SalesInfo() {
       try {
         // Fetch dashboard metrics
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const metricsResponse = await fetch(`${backendUrl}/admin_data`);
+        const metricsResponse = await fetch(`${backendUrl}/admin_data`,
+          {
+            method: 'GET',
+            credentials: 'include', // Include cookies in the request
+            headers: {
+              'Content-Type': 'application/json',
+              'x-username': localStorage.getItem('username'), // send from localStorage
+            },
+          }
+        );
         const metricsJson = await metricsResponse.json();
         setTotalGames(metricsJson.total_games);
         setTotalPurchases(metricsJson.total_purchases);
@@ -54,16 +63,7 @@ function SalesInfo() {
         });
 
         // Fetch top-revenue games data
-        const metricsResponse = await fetch(`${backendUrl}/admin_data`,
-          {
-            method: 'GET',
-            credentials: 'include', 
-            headers: {
-              'Content-Type': 'application/json',
-              'x-username': localStorage.getItem('username'), 
-            },
-          }
-        );
+        const profitedResponse = await fetch(`${backendUrl}/api/top-revenue`);
     
         const profitedJson = await profitedResponse.json();
         const profitedGames = profitedJson.data.map(game => game.game_name);
