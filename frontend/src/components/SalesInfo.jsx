@@ -54,7 +54,16 @@ function SalesInfo() {
         });
 
         // Fetch top-revenue games data
-        const profitedResponse = await fetch(`${backendUrl}/api/top-revenue`);
+        const metricsResponse = await fetch(`${backendUrl}/admin_data`,
+          {
+            method: 'GET',
+            credentials: 'include', 
+            headers: {
+              'Content-Type': 'application/json',
+              'x-username': localStorage.getItem('username'), 
+            },
+          }
+        );
     
         const profitedJson = await profitedResponse.json();
         const profitedGames = profitedJson.data.map(game => game.game_name);
