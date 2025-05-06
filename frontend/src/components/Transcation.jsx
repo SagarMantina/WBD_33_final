@@ -30,85 +30,104 @@ const Transaction = () => {
     totalTransactions: 0,
     totalAmount: 0,
     averageAmount: 0,
-    uniqueCustomers: 0
+    uniqueCustomers: 0,
+    revenue: 0,
   });
+  const [topRevenueSellers, setTopRevenueSellers] = useState([]);
+  const [topOldestSellers, setTopOldestSellers] = useState([]);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchData = async () => {
       try {
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        const response = await fetch(`${backendUrl}/admin/transactions`, {
-          method: 'GET',
+        const username = localStorage.getItem('username');
+
+        // Fetch transactions
+        const transactionRes = await fetch(`${backendUrl}/admin/transactions`, {
           headers: {
             'Content-Type': 'application/json',
-            'x-username': localStorage.getItem('username'),
+            'x-username': username,
           },
           credentials: 'include',
         });
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!transactionRes.ok) throw new Error('Failed to fetch transactions');
 
-        const data = await response.json();
+        const transactionData = await transactionRes.json();
+        if (!Array.isArray(transactionData)) throw new Error('Invalid transaction format');
 
-        if (Array.isArray(data)) {
-          setTransactions(data);
-          calculateStats(data);
-        } else {
-          setError('Invalid response format');
-        }
+        setTransactions(transactionData);
+        calculateStats(transactionData);
+
+        // Fetch revenue data
+        const revenueRes = await fetch(`${backendUrl}/admin/revenue`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-username': username,
+          },
+          credentials: 'include',
+        });
+        
+        if (!revenueRes.ok) throw new Error('Failed to fetch revenue details');
+
+        const revenueData = await revenueRes.json();
+        setStats(prev => ({ ...prev, revenue: revenueData.revenue.toFixed(2) }));
+        setTopRevenueSellers(revenueData.topRevenueSellers || []);
+        setTopOldestSellers(revenueData.topSellers || []);
+
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch transactions');
+        setError(err.message);
         setLoading(false);
       }
     };
 
-    fetchTransactions();
+    fetchData();
   }, []);
 
   const calculateStats = (data) => {
     const totalAmount = data.reduce((sum, t) => sum + t.amount, 0);
     const uniqueCustomers = new Set(data.map(t => t.buyer)).size;
-    
-    setStats({
+
+    setStats(prev => ({
+      ...prev,
       totalTransactions: data.length,
       totalAmount: totalAmount.toFixed(2),
       averageAmount: (totalAmount / data.length).toFixed(2),
-      uniqueCustomers
-    });
+      uniqueCustomers,
+    }));
   };
 
-  const prepareChartData = () => {
+  const prepareChartData = (key) => {
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - i);
       return date.toLocaleDateString();
     }).reverse();
-
-    const dailyAmounts = last7Days.map(date => {
-      const dayTransactions = transactions.filter(t => 
+  
+    const dailyValues = last7Days.map(date => {
+      const dayTransactions = transactions.filter(t =>
         new Date(t.date).toLocaleDateString() === date
       );
-      return dayTransactions.reduce((sum, t) => sum + t.amount, 0);
+      const total = dayTransactions.reduce((sum, t) => sum + t.amount, 0);
+      return key === 'amount' ? total : total * 0.1;
     });
-
+  
     return {
       labels: last7Days,
       datasets: [
         {
-          label: 'Daily Transaction Amount',
-          data: dailyAmounts,
-          borderColor: '#4a90e2',
-          backgroundColor: 'rgba(74, 144, 226, 0.1)',
+          label: key === 'amount' ? 'Daily Transaction Amount' : 'Revenue (10% of Transactions)',
+          data: dailyValues,
+          borderColor: key === 'amount' ? '#4a90e2' : '#ff9900',
+          backgroundColor: key === 'amount' ? 'rgba(74, 144, 226, 0.1)' : 'rgba(255, 153, 0, 0.1)',
           tension: 0.4,
-          fill: true
+          fill: true,
         }
       ]
     };
   };
-
+  
   if (loading) {
     return (
       <div className="loading-spinner">
@@ -124,58 +143,23 @@ const Transaction = () => {
   return (
     <div className="transaction-page">
       <h1>Transaction Dashboard</h1>
-      
+
       <div className="stats-container">
-        <div className="stat-card">
-          <h3>Total Transactions</h3>
-          <p>{stats.totalTransactions}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Total Amount</h3>
-          <p>₹{stats.totalAmount}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Average Transaction</h3>
-          <p>₹{stats.averageAmount}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Unique Customers</h3>
-          <p>{stats.uniqueCustomers}</p>
-        </div>
+        <div className="stat-card"><h3>Total Transactions</h3><p>{stats.totalTransactions}</p></div>
+        <div className="stat-card"><h3>Total Amount</h3><p>₹{stats.totalAmount}</p></div>
+        <div className="stat-card"><h3>Average Transaction</h3><p>₹{stats.averageAmount}</p></div>
+        <div className="stat-card"><h3>Unique Customers</h3><p>{stats.uniqueCustomers}</p></div>
+        <div className="stat-card"><h3>Total Revenue</h3><p>₹{stats.revenue}</p></div>
       </div>
 
       <div className="transaction-container">
         <div>
           <div className="graph-container">
             <h2>Transaction Trends</h2>
-            <Line 
-              data={prepareChartData()} 
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'top',
-                  },
-                  title: {
-                    display: true,
-                    text: 'Last 7 Days Transaction Amount'
-                  }
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: {
-                      color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                  },
-                  x: {
-                    grid: {
-                      display: false
-                    }
-                  }
-                }
-              }}
-            />
+            <Line data={prepareChartData('amount')} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Last 7 Days Transaction Amount' } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }} />
+
+            <h2 style={{ marginTop: '30px' }}>Revenue Trends</h2>
+            <Line data={prepareChartData('revenue')} options={{ responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Revenue Over Last 7 Days (Approximation)' } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }} />
           </div>
 
           <table className="transaction-table">
@@ -198,16 +182,42 @@ const Transaction = () => {
                     <td className="highlight">₹{transaction.amount.toFixed(2)}</td>
                     <td className="highlight">{transaction.game_name}</td>
                     <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                    <td>
-                      <span className="status-badge completed">Completed</span>
-                    </td>
+                    <td><span className="status-badge completed">Completed</span></td>
                   </tr>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="5">No transactions found.</td>
-                </tr>
+                <tr><td colSpan="6">No transactions found.</td></tr>
               )}
+            </tbody>
+          </table>
+
+          <h2>Top 5 Sellers by Revenue</h2>
+          <table className="transaction-table">
+            <thead>
+              <tr><th>Username</th><th>Earnings (₹)</th></tr>
+            </thead>
+            <tbody>
+              {topRevenueSellers.map((seller, index) => (
+                <tr key={index}>
+                  <td className="highlight">{seller.username}</td>
+                  <td className="highlight">₹{seller.earnings.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h2>Top 5 Oldest Sellers</h2>
+          <table className="transaction-table">
+            <thead>
+              <tr><th>Username</th><th>Joined At</th></tr>
+            </thead>
+            <tbody>
+              {topOldestSellers.map((seller, index) => (
+                <tr key={index}>
+                  <td className="highlight">{seller.username}</td>
+                  <td className="highlight">{new Date(seller.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -215,16 +225,14 @@ const Transaction = () => {
         <div className="recent-customers">
           <h2>Recent Customers</h2>
           <ul>
-            {[...new Set(transactions.map(transaction => transaction.buyer))]
-              .slice(0, 5)
-              .map((buyer, index) => (
-                <li key={index}>
-                  <span className="customer-name">{buyer}</span>
-                  <span className="transaction-count">
-                    {  -  transactions.filter(t => t.buyer === buyer).length} transactions
-                  </span>
-                </li>
-              ))}
+            {[...new Set(transactions.map(transaction => transaction.buyer))].slice(0, 5).map((buyer, index) => (
+              <li key={index}>
+                <span className="customer-name">{buyer}</span>
+                <span className="transaction-count">
+                  {transactions.filter(t => t.buyer === buyer).length} transactions
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
