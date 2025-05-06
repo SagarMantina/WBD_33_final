@@ -86,7 +86,7 @@
 
 .games-page .rating-value {
   font-size: 1.1em;
-  margin-right: 5px;
+  margin-right: 15px;
 }
 
 .games-page .rating-stars {
@@ -169,13 +169,26 @@
 
 .form-group input,
 .form-group select {
-  width: 100%;
+  width: 80%;
   padding: 12px;
   border-radius: 6px;
   border: 1px solid #444;
   background-color: #333;
   color: #ffffff;
   font-size: 16px;
+}
+
+.form-group select {
+  box-sizing: border-box;
+  display: block;
+  width: 80%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #333;
+  color: #ffffff;
+  font-size: 16px;
+  margin: 0; /* Ensure no extra margin */
 }
 
 .form-group input:focus,
