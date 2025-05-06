@@ -133,15 +133,25 @@ const UserGames = () => {
               <div className="game-poster">
                 <img src={game.poster} alt={game.game_name} />
               </div>
-              <div className="game-info">
-                <h3 className="game-title">{game.game_name}</h3>
-                <div className="game-rating">
-                  <span className="rating-value">{game.rating || 0}</span>
-                  <span className="rating-stars">★</span>
-                </div>
-                <div className="game-price">${game.price}</div>
-                <div className="game-category">{game.category}</div>
-              </div>
+              <div className="game-info" style={{ color: "#333", flex: 1 }}>
+    <h3 className="game-title" style={{ margin: "0 0 8px 0", fontSize: "1.2rem", color: "#ffd700", padding: "0 25px" }}>
+      {game.game_name}
+    </h3>
+    <div className="game-rating" style={{ marginBottom: "8px", fontSize: "14px", color: "#777" }}>
+      <span className="rating-value" style={{ fontSize: "13px", fontWeight: "bold", color: "#ff9800", marginLeft: "25px" }}>
+        {game.rating || 0}
+      </span>
+      <span className="rating-stars" style={{ fontSize: "13px", marginLeft: "10px", color: "#ff9800" }}>
+        ★
+      </span>
+    </div>
+    <div className="game-price" style={{ fontSize: "20px", color: "#2e7d32", fontWeight: "bold", marginBottom: "6px" ,padding: "0 25px" }}>
+      ₹{game.price}
+    </div>
+    <div className="game-category" style={{ fontSize: "20px", color: "#555" ,padding: "0 25px" }}>
+      {game.category}
+    </div>
+  </div>
             </div>
             <button 
               className="delete-button"
